@@ -1,5 +1,5 @@
 # K.O.
-A Smash Bros. style mod for Quake 1. Works with both traditional Quake maps where you will entitys will be knocked back more as their health decreases, and Smash style maps where your knockback rises with each hit and you have to blast your opponents into the boundaries of the map.
+A Smash Bros. style mod for Quake 1. Works with both traditional Quake maps where entities will be knocked back more as their health decreases, and Smash style maps where your knockback rises with each hit and you have to blast your opponents into the boundaries of the map.
 
 Compatible with most versions of Quake, though on older source ports transparency effects used might not work. Compatible with remastered, mapdb.json included so all you have to do is start a multiplayer game, bring down the console, type "game ko" and you should be good to go!
 
