@@ -1,0 +1,21 @@
+{
+	"episodes": [
+    		{
+      			"dir": "ko",
+     		 	"name": "KO",
+    			"needsSkillSelect": false
+    		}
+  	],
+	"maps": [
+		{
+			"title": "Moonrock",
+			"bsp": "ko_moonrock",
+			"episode": "ko",
+			"game": "ko",
+			"dm": true,
+			"coop": true,
+			"bots": false,
+			"sp": false
+		}
+	]
+}
