@@ -739,8 +739,8 @@ void() superspike_touch =
 // hit something that bleeds
 	if (other.takedamage)
 	{
-		spawn_touchblood(18);
-		T_Damage(other, self, self.owner, 18);
+		spawn_touchblood(25);
+		T_Damage(other, self, self.owner, 25);
 	}
 	else
 	{
