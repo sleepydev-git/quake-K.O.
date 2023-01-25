@@ -655,4 +655,3 @@ void() trigger_monsterjump =
 	InitTrigger();
 	self.touch = trigger_monsterjump_touch;
 };
-

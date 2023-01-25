@@ -13,10 +13,11 @@ client.qc
 player.qc
 monsters.qc
 doors.qc
-buttons.qc
 triggers.qc
+buttons.qc
 plats.qc
 misc.qc
+kofuncs.qc
 
 ogre.qc
 demon.qc

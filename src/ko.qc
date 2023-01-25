@@ -10,6 +10,8 @@ float smashmode;
 .float prevvel;
 .float bounce;
 .entity lastattacker;
+.float rocketmode;
+.float nailmode;
 
 //if (deathmatch == 1)No Items
 //if (deathmatch == 2)Random Items
@@ -45,11 +47,6 @@ void(vector kdir, float kdam) s_knockback =
     self.prevvel = self.velocity_z;
 }
 
-void() KillSky
-{
-    T_Damage(other,other.lastattacker,other.lastattacker,-999);
-};
-
 void() CheckBounce
 {
     if (self.bounce == 1)
@@ -63,17 +60,15 @@ void() CheckBounce
                 self.prevvel = self.velocity_z;
             }
             else self.bounce == 0;
-            
         }
     }
 }
 
 void() CheckDash
 {
-    float recharging;
     if (self.flags & FL_ONGROUND)
     {
-        self.dashcooldown = 0;
+        if (self.dashcooldown > 0) self.dashcooldown = 0;
         self.dashcount = 2;
     }
     if (self.impulse == 100)
@@ -81,24 +76,13 @@ void() CheckDash
         if (self.dashcooldown <= 0 && self.dashcount >= 1)
         {
             makevectors(self.angles);
-            self.velocity = (v_forward * 500) + (v_up * 400);
+            self.velocity = (v_forward * 500) + (v_up * 250);
             self.dashcooldown = 45;
             self.dashcount = self.dashcount - 1;
             self.bounce = 0;
             sound(self,CHAN_ITEM,"dash1.wav",1,ATTN_NORM);
         }
     }
-    if (self.dashcooldown >= 0)
-    {
-        self.dashcooldown = self.dashcooldown - 1;
-    }
-    
-}
-
-void() func_killsky
-{
-    self.movetype=MOVETYPE_PUSH;
-	self.solid = SOLID_BSP;
-	setmodel(self, self.model);
-    self.touch = KillSky;
+    if (self.dashcooldown >= 0) self.dashcooldown = self.dashcooldown - 1;
+    if (self.dashcooldown == 0 && self.dashcount >= 1) sound(self,CHAN_ITEM,"recharge.wav",1,ATTN_NORM);
 }
