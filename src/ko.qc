@@ -5,6 +5,7 @@
 float knockback = 2;
 float stacksize = 3;
 float smashmode;
+float ammoreload;
 .float dashcooldown;
 .float dashcount;
 .float prevvel;

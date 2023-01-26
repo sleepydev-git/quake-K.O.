@@ -2,6 +2,7 @@ void() Refill
 {
     if (activator.ammo_nails < 100) activator.ammo_nails = activator.ammo_nails + 5;
 	if (activator.ammo_rockets < 10) activator.ammo_rockets = activator.ammo_rockets + 1;
+	ammoreload = 1;
 }
 
 void() func_refill
@@ -10,12 +11,6 @@ void() func_refill
 	self.solid = SOLID_BSP;
 	setmodel(self, self.model);
     self.use = Refill;
-}
-
-void() CleanUp
-{
-    activator.model = string_null;
-    activator.solid = SOLID_NOT;
 }
 
 void() KillSky

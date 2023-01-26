@@ -9,7 +9,17 @@
 	"maps": [
 		{
 			"title": "Moonrock",
-			"bsp": "moonrock",
+			"bsp": "ko_moonrock",
+			"episode": "ko",
+			"game": "ko",
+			"dm": true,
+			"coop": true,
+			"bots": false,
+			"sp": false
+		}
+		{
+			"title": "Tower",
+			"bsp": "ko_tower",
 			"episode": "ko",
 			"game": "ko",
 			"dm": true,

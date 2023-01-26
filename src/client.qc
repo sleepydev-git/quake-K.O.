@@ -893,8 +893,14 @@ void() PlayerPreThink =
 	else
 		self.flags = self.flags | FL_JUMPRELEASED;
 
-		CheckBounce();
-		CheckDash();
+	CheckBounce();
+	CheckDash();
+
+	if (ammoreload == 1)
+	{
+		W_SetCurrentAmmo();
+		ammoreload = 0;
+	}
 
 // teleporters can force a non-moving pause time
 	if (time < self.pausetime)

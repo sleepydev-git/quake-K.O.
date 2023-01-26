@@ -192,6 +192,9 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
 		if (smashmode == 0)
 			targ.health = targ.health - take;
 	}
+	
+	if (targ.health >= 999)
+		targ.health = 998;
 
 	if (targ.health <= 0)
 	{

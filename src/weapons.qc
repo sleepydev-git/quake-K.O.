@@ -643,7 +643,7 @@ void() W_FireSuperSpikes =
 
 	sound(self, CHAN_WEAPON, "weapons/spike2.wav", 1, ATTN_NORM);
 	self.attack_finished = time + 0.2;
-	self.currentammo = self.ammo_nails = self.ammo_nails - 2;
+	self.currentammo = self.ammo_nails = self.ammo_nails - 1;
 	dir = aim(self, 1250);
 	launch_spike(self.origin + '0 0 16', dir);
 	newmis.touch = superspike_touch;
