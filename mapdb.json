@@ -16,7 +16,7 @@
 			"coop": true,
 			"bots": false,
 			"sp": false
-		}
+		},
 		{
 			"title": "Tower",
 			"bsp": "ko_tower",
