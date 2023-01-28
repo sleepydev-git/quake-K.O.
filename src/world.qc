@@ -276,6 +276,8 @@ void() worldspawn =
 	precache_sound("dash1.wav"); //Dash 1
 	precache_sound("dash2.wav"); //Dash 2
 	precache_sound("recharge.wav"); //Recharge
+	precache_sound("2dash.wav"); //2 Dashes left
+	precache_sound("1dash.wav"); //1 Dashes left
 
 	precache_model("progs/player.mdl");
 	precache_model("progs/eyes.mdl");
