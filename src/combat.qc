@@ -127,7 +127,7 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
 	if (!targ.takedamage)
 		return;
 
-	targ.lastattacker = attacker;
+	if (attacker != targ) targ.lastattacker = attacker;
 
 // used by buttons and triggers to set activator for target firing
 	damage_attacker = attacker;
