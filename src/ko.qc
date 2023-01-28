@@ -13,6 +13,7 @@ float ammoreload;
 .entity lastattacker;
 .float rocketmode;
 .float nailmode;
+.float dashok
 
 //if (deathmatch == 1)No Items
 //if (deathmatch == 2)Random Items
@@ -44,7 +45,7 @@ void(vector kdir, float kdam) s_knockback =
         self.flags = self.flags - FL_ONGROUND;
     }
     self.bounce = 1;
-    self.dashcooldown = self.dashcooldown + 75;
+    self.dashcooldown = self.dashcooldown + kdam + 45;
     self.prevvel = self.velocity_z;
 }
 
@@ -52,38 +53,45 @@ void() CheckBounce
 {
     if (self.bounce == 1)
     {
+        particle(self.origin,'10 10 10',7+(random()*5),5);
         if (self.flags & FL_ONGROUND)
         {
+            self.dashcount = 2;
             if (fabs(self.prevvel) >= 100)
             {
                 self.flags = self.flags - FL_ONGROUND;
                 self.velocity_z = (fabs(self.prevvel) * 0.5) + 20;
                 self.prevvel = self.velocity_z;
             }
-            else self.bounce == 0;
         }
     }
 }
 
 void() CheckDash
 {
-    if (self.flags & FL_ONGROUND)
-    {
-        if (self.dashcooldown > 0) self.dashcooldown = 0;
-        self.dashcount = 2;
-    }
+    if (self.flags & FL_ONGROUND) self.dashcount = 2;
     if (self.impulse == 100)
     {
-        if (self.dashcooldown <= 0 && self.dashcount >= 1)
+        if (self.dashcount > 0 && self.dashok == 1)
         {
-            makevectors(self.angles);
-            self.velocity = (v_forward * 500) + (v_up * 250);
-            self.dashcooldown = 45;
+            makevectors(self.v_angle);
+            self.velocity = (v_forward * 750) + ('0 0 200');
             self.dashcount = self.dashcount - 1;
-            self.bounce = 0;
-            sound(self,CHAN_ITEM,"dash1.wav",1,ATTN_NORM);
+            sound(self,CHAN_VOICE,"dash1.wav",1,ATTN_NORM);
         }
     }
-    if (self.dashcooldown >= 0) self.dashcooldown = self.dashcooldown - 1;
-    if (self.dashcooldown == 0 && self.dashcount >= 1) sound(self,CHAN_ITEM,"recharge.wav",1,ATTN_NORM);
+    if (self.dashcooldown == 35) sound(self,CHAN_ITEM,"recharge.wav",1,ATTN_NORM);
+    if (self.dashcooldown <= 0 && self.dashok == 0)
+    {
+        self.bounce = 0;
+        self.dashok = 1;
+        if (self.dashcount == 2) sound(self,CHAN_ITEM,"2dash.wav",1,ATTN_NORM);
+        if (self.dashcount == 1) sound(self,CHAN_ITEM,"1dash.wav",1,ATTN_NORM);
+    }
+    if (self.dashcooldown > 0)
+    {
+        self.dashcooldown = self.dashcooldown - 1;
+        self.dashok = 0;
+        self.bounce = 1;
+    }
 }
