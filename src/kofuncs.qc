@@ -16,7 +16,7 @@ void() func_refill
 void() KillSky
 {
     T_Damage(other,other.lastattacker,other.lastattacker,-999);
-};
+}
 
 void() func_killsky
 {
