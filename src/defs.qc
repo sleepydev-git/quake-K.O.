@@ -305,6 +305,7 @@ float IT_SHOTGUN = 1;
 float IT_SUPER_SHOTGUN = 2;
 float IT_NAILGUN = 4;
 float IT_SUPER_NAILGUN = 8;
+float IT_SHOTTY_NG = 12;
 float IT_GRENADE_LAUNCHER = 16;
 float IT_ROCKET_LAUNCHER = 32;
 float IT_LIGHTNING = 64;

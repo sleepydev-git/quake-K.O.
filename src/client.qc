@@ -77,7 +77,7 @@ void() SetNewParms =
 	CheckSmashmode();
 	if (smashmode == 1)
 	{
-		parm1 = IT_AXE | IT_ROCKET_LAUNCHER | IT_GRENADE_LAUNCHER | IT_SUPER_NAILGUN;
+		parm1 = IT_AXE | IT_ROCKET_LAUNCHER | IT_GRENADE_LAUNCHER | IT_SUPER_NAILGUN | IT_SHOTTY_NG;
 		parm2 = 1;
 		parm3 = 0;
 		parm4 = 0;

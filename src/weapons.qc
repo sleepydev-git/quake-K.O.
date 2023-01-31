@@ -645,7 +645,7 @@ void() W_FireSuperSpikes =
 	self.attack_finished = time + 0.2;
 	self.currentammo = self.ammo_nails = self.ammo_nails - 1;
 	dir = aim(self, 1250);
-	launch_spike(self.origin + '0 0 16', dir);
+	launch_spike(self.origin + '0 0 16' + (v_forward * 20), dir);
 	newmis.touch = superspike_touch;
 	setmodel(newmis, "progs/s_spike.mdl");
 	setsize(newmis, VEC_ORIGIN, VEC_ORIGIN);
@@ -675,12 +675,69 @@ void(float ox) W_FireSpikes =
 	self.attack_finished = time + 0.2;
 	self.currentammo = self.ammo_nails = self.ammo_nails - 1;
 	dir = aim(self, 1000);
-	launch_spike(self.origin + '0 0 16' + v_right*ox, dir);
+	launch_spike(self.origin + '0 0 32' + v_right*ox, dir);
 
 	self.punchangle_x = -2;
 };
 
+/*
+===============
+MultiShot
 
+A disgusting chimera of the nailgun and shotgun fire code.
+===============
+*/
+
+void(float shotcount, vector org, vector dir, vector spread) MultiShot =
+{
+	vector direction; //idk if these need to be local or not
+	while (shotcount > 0)
+		{
+			newmis = spawn(); //Spawn new missile
+			newmis.owner = self; //Missile's owner is player
+			newmis.movetype = MOVETYPE_FLYMISSILE; //Movetype is fly
+			newmis.solid = SOLID_BBOX; //Solid
+
+			direction = dir + crandom()*spread_x*v_right + crandom()*spread_y*v_up; //Spread code, copied from FireBulets
+			newmis.angles = vectoangles(direction);
+			
+			newmis.touch = spike_touch;
+			newmis.classname = "spike";
+			newmis.think = SUB_Remove;
+			newmis.nextthink = time + 6; //MAYBE THE COOLDOWN CODE?!?!?!
+			setmodel(newmis, "progs/spike.mdl");
+			setsize(newmis, VEC_ORIGIN, VEC_ORIGIN);
+			setorigin(newmis, org);
+
+			newmis.velocity = direction * 1000;
+			shotcount = shotcount - 1;
+	}
+};
+
+void(float ox) W_FireShotty =
+{
+	vector dir;
+
+	makevectors(self.v_angle);
+
+	if (self.ammo_nails < 10)
+	{
+		self.weapon = W_BestWeapon();
+		W_SetCurrentAmmo();
+		return;
+	}
+
+	sound(self, CHAN_WEAPON, "weapons/rocket1i.wav", 1, ATTN_NORM);
+	self.attack_finished = time + 0.5; //cooldown time
+	self.currentammo = self.ammo_nails = self.ammo_nails - 10; //remove ammo
+	dir = aim(self, 1000);
+	MultiShot(10,self.origin + '0 0 16' + v_right*ox, dir,'0.25 0.25 0.1');
+	//launch_spike(self.origin + '0 0 16' + v_right*ox, dir);
+	//knockback mod
+	self.velocity = self.velocity-(v_forward*350);
+
+	self.punchangle_x = -2;
+};
 
 .float hit_z;
 void() spike_touch =
@@ -798,6 +855,13 @@ void() W_SetCurrentAmmo =
 		self.items = self.items | IT_NAILS;
 	}
 	else if (self.weapon == IT_SUPER_NAILGUN)
+	{
+		self.currentammo = self.ammo_nails;
+		self.weaponmodel = "progs/v_nail2.mdl";
+		self.weaponframe = 0;
+		self.items = self.items | IT_NAILS;
+	}
+	else if (self.weapon == IT_SHOTTY_NG)
 	{
 		self.currentammo = self.ammo_nails;
 		self.weaponmodel = "progs/v_nail2.mdl";
@@ -955,6 +1019,10 @@ void() W_Attack =
 		self.attack_finished = time + 0.1;
 		sound(self, CHAN_AUTO, "weapons/lstart.wav", 1, ATTN_NORM);
 	}
+	else if (self.weapon == IT_SHOTTY_NG)
+	{
+		W_FireShotty(0);
+	}
 };
 
 /*
@@ -978,9 +1046,20 @@ void() W_ChangeWeapon =
 	{
 		if (smashmode == 1)
 		{
-			fl = IT_ROCKET_LAUNCHER;
-			if (self.ammo_rockets < 1)
-				am = 1;
+			if (self.weapon != IT_SUPER_NAILGUN)
+			{
+				fl = IT_SUPER_NAILGUN;
+				if (self.ammo_nails < 1)
+					am = 1;
+				sprint(self,"Nailgun Mode\n");
+			}
+			else
+			{
+				fl = IT_SHOTTY_NG;
+				if (self.ammo_nails < 10)
+					am = 1;
+				sprint(self,"Shotty Mode\n");
+			}
 		}
 		else if (smashmode == 0)
 		{
@@ -993,9 +1072,20 @@ void() W_ChangeWeapon =
 	{
 		if (smashmode == 1)
 		{
-			fl = IT_GRENADE_LAUNCHER;
-			if (self.ammo_rockets < 1)
-				am = 1;
+			if (self.weapon != IT_ROCKET_LAUNCHER)
+			{
+				fl = IT_ROCKET_LAUNCHER;
+				sprint(self,"Rocket Mode\n");
+				if (self.ammo_rockets < 1)
+					am = 1;
+			}
+			else
+			{
+				fl = IT_GRENADE_LAUNCHER;
+				sprint(self,"Grenade Mode\n");
+				if (self.ammo_rockets < 1)
+					am = 1;
+			}
 		}
 		else if (smashmode == 0)
 		{
@@ -1010,7 +1100,7 @@ void() W_ChangeWeapon =
 		{
 			fl = IT_SUPER_NAILGUN;
 			if (self.ammo_nails < 1)
-				am = 1;
+				am =  1;
 		}
 		else if (smashmode == 0)
 		{
@@ -1021,9 +1111,18 @@ void() W_ChangeWeapon =
 	}
 	else if (self.impulse == 5)
 	{
-		fl = IT_SUPER_NAILGUN;
-		if (self.ammo_nails < 2)
-			am = 1;
+		if (smashmode == 1)
+		{
+			fl = IT_SHOTTY_NG;
+			if (self.ammo_nails < 10)
+				am = 1;
+		}
+		else if (smashmode == 0)
+		{
+			fl = IT_SUPER_NAILGUN;
+			if (self.ammo_nails < 2)
+				am = 1;
+		}
 	}
 	else if (self.impulse == 6)
 	{
@@ -1084,6 +1183,7 @@ void() CheatCommand =
 		IT_SUPER_SHOTGUN |
 		IT_NAILGUN |
 		IT_SUPER_NAILGUN |
+		IT_SHOTTY_NG |
 		IT_GRENADE_LAUNCHER |
 		IT_ROCKET_LAUNCHER |
 		IT_KEY1 | IT_KEY2;
