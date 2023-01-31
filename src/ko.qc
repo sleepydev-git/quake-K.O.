@@ -10,6 +10,7 @@ float ammoreload;
 .float rocketmode;
 .float nailmode;
 .float dashok
+.float parry
 
 //if (deathmatch == 1)No Items
 //if (deathmatch == 2)Random Items
@@ -77,6 +78,7 @@ void() CheckDash
         {
             makevectors(self.v_angle);
             self.velocity = (v_forward * 750) + ('0 0 200');
+            self.velocity_z = self.velocity_z * 0.5;
             self.dashcount = self.dashcount - 1;
             sound(self,CHAN_VOICE,"dash1.wav",1,ATTN_NORM);
         }
