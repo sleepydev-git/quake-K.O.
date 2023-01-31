@@ -100,16 +100,35 @@ float(entity e, float healamount, float ignore) T_Heal =
 {
 	if (e.health <= 0)
 		return 0;
-	if ((!ignore) && (e.health >= other.max_health))
-		return 0;
+//	if ((!ignore) && (e.health >= other.max_health))
+//		return 0;
 	healamount = ceil(healamount);
 
-	e.health = e.health + healamount;
+	switch (smashmode) 
+	{
+		case 0:
+			e.health = e.health + healamount;
+			break;
+		case 1:
+			e.health = e.health - healamount;
+			break;
+	}
+
 	if ((!ignore) && (e.health >= other.max_health))
 		e.health = other.max_health;
+	
+	switch (smashmode)
+	{
+		case 0:
+			if (e.health > 250)
+			e.health = 250;
+			break;
+		case 1:
+			if (e.health < 1)
+			e.health = 1;
+			break;
+	}
 
-	if (e.health > 250)
-		e.health = 250;
 	return 1;
 };
 
