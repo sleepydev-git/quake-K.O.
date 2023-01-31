@@ -25,3 +25,16 @@ void() func_killsky
 	setmodel(self, self.model);
     self.touch = KillSky;
 }
+
+void() func_randomitem
+{
+	local void randoitem()
+	{
+		float a;
+		a = random();
+		if (a < 0.9) item_health();
+		else item_armor1();
+	}
+	self.think = randoitem;
+	self.nextthink = time + random()*20;
+}
