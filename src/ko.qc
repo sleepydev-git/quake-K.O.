@@ -104,8 +104,9 @@ void() Parry
     if (other.classname != "player")
     {
         vectoangles(self.angles);
-        particle(other.origin,'10 10 10',95,25);
+        particle(other.origin+'0 0 10','10 10 10',95,25);
         other.velocity = v_forward * 1500;
+        other.angles = vectoangles(other.velocity);
         other.owner = self;
         sound(self,CHAN_VOICE,"player/axhit2.wav",1,ATTN_NORM);
         SUB_Remove();
