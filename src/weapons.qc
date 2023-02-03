@@ -56,6 +56,18 @@ void() W_FireAxe =
 {
 	vector source;
 	vector org;
+	entity pbox;
+
+    pbox = spawn();
+    pbox.owner = self;
+	pbox.classname = "pbox";
+    pbox.solid = SOLID_TRIGGER;
+
+    pbox.touch = Parry;
+	setsize(pbox,'-32 -32 -32','32 32 32');
+    setorigin(pbox,self.origin+'0 0 16'+(v_forward*5));
+	pbox.think = SUB_Remove;
+	pbox.nextthink = time + 0.1;
 
 	source = self.origin + '0 0 16';
 	traceline(source, source + v_forward*64, FALSE, self);
@@ -675,7 +687,7 @@ void(float ox) W_FireSpikes =
 	self.attack_finished = time + 0.2;
 	self.currentammo = self.ammo_nails = self.ammo_nails - 1;
 	dir = aim(self, 1000);
-	launch_spike(self.origin + '0 0 32' + v_right*ox, dir);
+	launch_spike(self.origin + '0 0 16' + v_right*ox, dir);
 
 	self.punchangle_x = -2;
 };

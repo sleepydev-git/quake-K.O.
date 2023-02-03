@@ -9,8 +9,8 @@ float ammoreload;
 .entity lastattacker;
 .float rocketmode;
 .float nailmode;
-.float dashok
-.float parry
+.float dashok;
+.float parry;
 
 //if (deathmatch == 1)No Items
 //if (deathmatch == 2)Random Items
@@ -96,5 +96,18 @@ void() CheckDash
         self.dashcooldown = self.dashcooldown - 1;
         self.dashok = 0;
         self.bounce = 1;
+    }
+}
+
+void() Parry
+{
+    if (other.classname != "player")
+    {
+        vectoangles(self.angles);
+        particle(other.origin,'10 10 10',95,25);
+        other.velocity = v_forward * 1500;
+        other.owner = self;
+        sound(self,CHAN_VOICE,"player/axhit2.wav",1,ATTN_NORM);
+        SUB_Remove();
     }
 }
