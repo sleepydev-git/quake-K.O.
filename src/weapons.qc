@@ -62,10 +62,13 @@ void() W_FireAxe =
     pbox.owner = self;
 	pbox.classname = "pbox";
     pbox.solid = SOLID_TRIGGER;
+	vectoangles(self.angles);
+	pbox.forward = v_forward;
 
     pbox.touch = Parry;
 	setsize(pbox,'-32 -32 -32','32 32 32');
-    setorigin(pbox,self.origin+'0 0 16'+(v_forward*5));
+	setmodel(pbox,"progs/missile.mdl");
+    setorigin(pbox,self.origin+'0 0 16'+(v_forward*100));
 	pbox.think = SUB_Remove;
 	pbox.nextthink = time + 0.1;
 
