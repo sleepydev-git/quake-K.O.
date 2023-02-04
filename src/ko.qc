@@ -12,6 +12,7 @@ float ammoreload;
 .float dashok;
 .float parry;
 .vector forward;
+.float nadetime;
 
 //if (deathmatch == 1)No Items
 //if (deathmatch == 2)Random Items
@@ -104,11 +105,13 @@ void() Parry
 {
     if (other.classname != "player")
     {
-        if (!self.speed)
-            self.speed = 1000;
-        self.speed = self.speed * 1.5;
+        if (!other.speed)
+            other.speed = 1000;
+        if (other.nadetime)
+            other.nadetime = other.nadetime + 2.5;
+        other.speed = other.speed * 1.5;
         particle(other.origin+'0 0 10','10 10 10',95,25);
-        other.velocity = self.forward * self.speed;
+        other.velocity = self.forward * other.speed;
         other.angles = vectoangles(other.velocity);
         other.owner = self;
         sound(self,CHAN_VOICE,"player/axhit2.wav",1,ATTN_NORM);

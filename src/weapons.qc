@@ -67,8 +67,7 @@ void() W_FireAxe =
 
     pbox.touch = Parry;
 	setsize(pbox,'-32 -32 -32','32 32 32');
-	setmodel(pbox,"progs/missile.mdl");
-    setorigin(pbox,self.origin+'0 0 16'+(v_forward*100));
+    setorigin(pbox,self.origin+'0 0 16'+(v_forward*10));
 	pbox.think = SUB_Remove;
 	pbox.nextthink = time + 0.1;
 
@@ -416,12 +415,13 @@ void() W_FireRocket =
 	missile.owner = self;
 	missile.movetype = MOVETYPE_FLYMISSILE;
 	missile.solid = SOLID_BBOX;
+	missile.speed = 1000;
 
 // set missile speed
 
 	makevectors(self.v_angle);
-	missile.velocity = aim(self, 1000);
-	missile.velocity = missile.velocity * 1000;
+	missile.velocity = aim(self, missile.speed);
+	missile.velocity = missile.velocity * missile.speed;
 	missile.angles = vectoangles(missile.velocity);
 
 	missile.touch = T_MissileTouch;
@@ -593,13 +593,14 @@ void() W_FireGrenade =
 // set missile speed
 
 	makevectors(self.v_angle);
+	missile.speed = 600;
 
 	if (self.v_angle_x)
-		missile.velocity = v_forward*600 + v_up * 200 + crandom()*v_right*10 + crandom()*v_up*10;
+		missile.velocity = v_forward*missile.speed + v_up * 200 + crandom()*v_right*10 + crandom()*v_up*10;
 	else
 	{
 		missile.velocity = aim(self, 10000);
-		missile.velocity = missile.velocity * 600;
+		missile.velocity = missile.velocity * missile.speed;
 		missile.velocity_z = 200;
 	}
 
@@ -610,7 +611,8 @@ void() W_FireGrenade =
 	missile.touch = GrenadeTouch;
 
 // set missile duration
-	missile.nextthink = time + 2.5;
+	missile.nadetime = 2.5;
+	missile.nextthink = time + missile.nadetime;
 	missile.think = GrenadeExplode;
 
 	setmodel(missile, "progs/grenade.mdl");
@@ -649,7 +651,8 @@ void(vector org, vector dir) launch_spike =
 	setsize(newmis, VEC_ORIGIN, VEC_ORIGIN);
 	setorigin(newmis, org);
 
-	newmis.velocity = dir * 1000;
+	newmis.speed = 1250;
+	newmis.velocity = dir * newmis.speed;
 };
 
 void() W_FireSuperSpikes =
@@ -659,7 +662,7 @@ void() W_FireSuperSpikes =
 	sound(self, CHAN_WEAPON, "weapons/spike2.wav", 1, ATTN_NORM);
 	self.attack_finished = time + 0.2;
 	self.currentammo = self.ammo_nails = self.ammo_nails - 1;
-	dir = aim(self, 1250);
+	dir = aim(self, 1000);
 	launch_spike(self.origin + '0 0 16' + (v_forward * 20), dir);
 	newmis.touch = superspike_touch;
 	setmodel(newmis, "progs/s_spike.mdl");
@@ -724,7 +727,8 @@ void(float shotcount, vector org, vector dir, vector spread) MultiShot =
 			setsize(newmis, VEC_ORIGIN, VEC_ORIGIN);
 			setorigin(newmis, org);
 
-			newmis.velocity = direction * 1000;
+			newmis.speed = 1000;
+			newmis.velocity = direction * newmis.speed;
 			shotcount = shotcount - 1;
 	}
 };

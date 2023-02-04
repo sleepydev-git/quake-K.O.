@@ -107,7 +107,8 @@ void(vector org, vector vec) LaunchLaser =
 
 	setorigin(newmis, org);
 
-	newmis.velocity = vec * 600;
+	newmis.speed = 600;
+	newmis.velocity = vec * newmis.speed;
 	newmis.angles = vectoangles(newmis.velocity);
 
 	newmis.nextthink = time + 5;
