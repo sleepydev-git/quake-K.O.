@@ -18,6 +18,7 @@ Features
 - Funny head physics.
 
 Planned Features
+-
 - Randomly spawning items
 - Items such as Quad, Lightning, and Railgun being timed powerups.
 
