@@ -25,4 +25,4 @@ Planned Features
 Credits
 -
 - MissLavender and the LibreQuake team for many textures and assets used.
-- My friends Ash and Vivi for playtesting with me.
+- My friends Ash, Estifanos, and Vivi for playtesting with me.
