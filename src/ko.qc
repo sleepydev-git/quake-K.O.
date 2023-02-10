@@ -13,6 +13,11 @@ float ammoreload;
 .float parry;
 .vector forward;
 .float nadetime;
+.string entity_type;
+.float weight;
+.float damagevel;
+.entity lasttouch;
+.vector savevel;
 
 //if (deathmatch == 1)No Items
 //if (deathmatch == 2)Random Items
@@ -116,5 +121,27 @@ void() Parry
         other.owner = self;
         sound(self,CHAN_VOICE,"player/axhit2.wav",1,ATTN_NORM);
         SUB_Remove();
+    }
+}
+
+void() ItemLaunch
+{
+    vector dir;
+    dir = self.origin - other.origin;
+    normalize(dir);
+    self.damagevel = fabs(self.velocity_x) + fabs(self.velocity_y) + fabs(self.velocity_z); //this should get a approximation of the speed of the head
+    if (self.classname != "player" && other.solid != SOLID_BSP)
+    {
+        self.lasttouch = other; //this is saved to determine who gets the kill if the head vel kills somebody
+        self.flags = self.flags - (self.flags & FL_ONGROUND);
+        if (!other.savevel) self.velocity = self.velocity + other.velocity + '0 0 200';
+        else self.velocity = self.velocity + other.savevel + '0 0 200'; //insanely hacky but it works
+        self.velocity_z = fabs(self.velocity_z);
+//        self.owner = other;
+        if (self.damagevel >= 1000)
+        {
+            T_Damage(other,self,self.lasttouch,self.damagevel/10);
+            self.velocity = -dir * self.velocity; //bounce off otherwise it causes issues
+        }
     }
 }

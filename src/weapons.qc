@@ -358,7 +358,7 @@ void() BecomeExplosion =
 
 void() T_MissileTouch =
 {
-	float damg;
+	.float damg;
 
 	if (other == self.owner)
 		return; // don't explode on owner
@@ -369,13 +369,13 @@ void() T_MissileTouch =
 		return;
 	}
 
-	damg = 100 + random()*20;
+	self.damg = 100;
 
 	if (other.health)
 	{
 		if (other.classname == "monster_shambler")
-			damg = damg * 0.5; // mostly immune
-		T_Damage(other, self, self.owner, damg );
+			self.damg = self.damg * 0.5; // mostly immune
+		T_Damage(other, self, self.owner, self.damg );
 	}
 
 	// don't do radius damage to the other, because all the damage
@@ -412,6 +412,7 @@ void() W_FireRocket =
 	self.punchangle_x = -2;
 
 	missile = spawn();
+	missile.classname = "rocket";
 	missile.owner = self;
 	missile.movetype = MOVETYPE_FLYMISSILE;
 	missile.solid = SOLID_BBOX;
@@ -423,6 +424,7 @@ void() W_FireRocket =
 	missile.velocity = aim(self, missile.speed);
 	missile.velocity = missile.velocity * missile.speed;
 	missile.angles = vectoangles(missile.velocity);
+	missile.savevel = missile.velocity;
 
 	missile.touch = T_MissileTouch;
 
