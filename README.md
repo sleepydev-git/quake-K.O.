@@ -11,10 +11,14 @@ Notes for mappers
 - Any map without a func_killsky will automatically be set to traditional damage mode rather than Smash style damage mode.
 - Preferably use royalty-free textures.
 
-Planned Features
+Features
 -
 - Projectiles can be parried with the axe.
 - Spread shot alt firing mode for the nailgun.
+- Funny head physics.
+
+Planned Features
+- Randomly spawning items
 - Items such as Quad, Lightning, and Railgun being timed powerups.
 
 Credits
