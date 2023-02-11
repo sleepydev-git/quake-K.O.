@@ -127,6 +127,7 @@ void() Parry
 void() ItemLaunch
 {
     vector dir;
+    self.nextthink = time + 5;
     dir = self.origin - other.origin;
     normalize(dir);
     self.damagevel = fabs(self.velocity_x) + fabs(self.velocity_y) + fabs(self.velocity_z); //this should get a approximation of the speed of the head
@@ -140,7 +141,7 @@ void() ItemLaunch
 //        self.owner = other;
         if (self.damagevel >= 1000)
         {
-            T_Damage(other,self,self.lasttouch,self.damagevel/10);
+            T_Damage(other,self,self.lasttouch,self.damagevel/20);
             self.velocity = -dir * self.velocity; //bounce off otherwise it causes issues
         }
     }

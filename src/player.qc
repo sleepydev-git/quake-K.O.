@@ -517,10 +517,12 @@ void(string gibname, float dm) ThrowHead =
 {
 	setmodel(self, gibname);
 	self.frame = 0;
-	self.nextthink = -1;
+	self.think = SUB_Remove;
+	self.nextthink = time + 5;
 	self.movetype = MOVETYPE_BOUNCE;
 	self.takedamage = DAMAGE_NO;
 	self.solid = SOLID_BBOX;
+	self.classname = "head";
 	self.touch = ItemLaunch;
 	self.view_ofs = '0 0 8';
 	setsize(self, '-16 -16 0', '16 16 56');
