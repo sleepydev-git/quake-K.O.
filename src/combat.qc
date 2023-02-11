@@ -102,6 +102,8 @@ void(entity targ, entity attacker) Killed =
 	self.takedamage = DAMAGE_NO;
 	self.touch = SUB_Null;
 	self.dashcooldown = 0;
+	self.prevvel = 0;
+	self.dashcount = 2;
 
 	monster_death_use();
 	self.th_die();

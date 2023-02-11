@@ -127,7 +127,7 @@ void() Parry
 void() ItemLaunch
 {
     vector dir;
-    self.nextthink = time + 5;
+    //self.nextthink = time + 5;
     dir = self.origin - other.origin;
     normalize(dir);
     self.damagevel = fabs(self.velocity_x) + fabs(self.velocity_y) + fabs(self.velocity_z); //this should get a approximation of the speed of the head
@@ -136,7 +136,7 @@ void() ItemLaunch
         self.lasttouch = other; //this is saved to determine who gets the kill if the head vel kills somebody
         self.flags = self.flags - (self.flags & FL_ONGROUND);
         if (!other.savevel) self.velocity = self.velocity + other.velocity + '0 0 200';
-        else self.velocity = self.velocity + other.savevel + '0 0 200'; //insanely hacky but it works
+        else self.velocity = self.velocity + other.savevel + '0 0 600'; //insanely hacky but it works
         self.velocity_z = fabs(self.velocity_z);
 //        self.owner = other;
         if (self.damagevel >= 1000)
