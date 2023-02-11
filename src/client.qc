@@ -1261,6 +1261,11 @@ void(entity targ, entity attacker) ClientObituary =
 					else
 						deathstring2 = "'s shaft\n";
 				}
+				if (rnum == IT_SHOTTY_NG)
+				{
+					deathstring = " shreds ";
+					deathstring = "\n";
+				}
 				bprint(targ.netname);
 				bprint(deathstring);
 				bprint(attacker.netname);
