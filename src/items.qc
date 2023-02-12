@@ -468,6 +468,7 @@ void() weapon_touch =
 		hadammo = other.ammo_rockets;
 		new = IT_SUPER_SHOTGUN;
 		other.ammo_shells = other.ammo_shells + 5;
+		other.items = other.items | IT_SHOTTY_NG; //ko add nailgun shotty to arsenal
 	}
 	else if (self.classname == "weapon_rocketlauncher")
 	{
