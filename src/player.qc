@@ -517,8 +517,6 @@ void(string gibname, float dm) ThrowHead =
 {
 	setmodel(self, gibname);
 	self.frame = 0;
-	//self.think = SUB_Remove;
-	//self.nextthink = time + 5;
 	self.movetype = MOVETYPE_BOUNCE;
 	self.takedamage = DAMAGE_NO;
 	self.solid = SOLID_BBOX;
