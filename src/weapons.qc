@@ -842,6 +842,82 @@ PLAYER WEAPON USE
 ===============================================================================
 */
 
+void() W_SetCurrentAmmo2 =
+{
+	//player_run(); // get out of any weapon firing states
+
+	self.items = self.items - (self.items & (IT_SHELLS | IT_NAILS | IT_ROCKETS | IT_CELLS));
+
+	if (self.weapon == IT_AXE)
+	{
+		self.currentammo = 0;
+		self.weaponmodel = "progs/v_axe.mdl";
+		//self.weaponframe = 0;
+	}
+	else if (self.weapon == IT_SHOTGUN)
+	{
+		self.currentammo = self.ammo_shells;
+		self.weaponmodel = "progs/v_shot.mdl";
+		//self.weaponframe = 0;
+		self.items = self.items | IT_SHELLS;
+	}
+	else if (self.weapon == IT_SUPER_SHOTGUN)
+	{
+		self.currentammo = self.ammo_shells;
+		self.weaponmodel = "progs/v_shot2.mdl";
+		//self.weaponframe = 0;
+		self.items = self.items | IT_SHELLS;
+	}
+	else if (self.weapon == IT_NAILGUN)
+	{
+		self.currentammo = self.ammo_nails;
+		self.weaponmodel = "progs/v_nail.mdl";
+		//self.weaponframe = 0;
+		self.items = self.items | IT_NAILS;
+	}
+	else if (self.weapon == IT_SUPER_NAILGUN)
+	{
+		self.currentammo = self.ammo_nails;
+		self.weaponmodel = "progs/v_nail2.mdl";
+		//self.weaponframe = 0;
+		self.items = self.items | IT_NAILS;
+	}
+	else if (self.weapon == IT_SHOTTY_NG)
+	{
+		self.currentammo = self.ammo_nails;
+		self.weaponmodel = "progs/v_nail2.mdl";
+		//self.weaponframe = 0;
+		self.items = self.items | IT_NAILS;
+	}
+	else if (self.weapon == IT_GRENADE_LAUNCHER)
+	{
+		self.currentammo = self.ammo_rockets;
+		self.weaponmodel = "progs/v_rock.mdl";
+		//self.weaponframe = 0;
+		self.items = self.items | IT_ROCKETS;
+	}
+	else if (self.weapon == IT_ROCKET_LAUNCHER)
+	{
+		self.currentammo = self.ammo_rockets;
+		self.weaponmodel = "progs/v_rock2.mdl";
+		//self.weaponframe = 0;
+		self.items = self.items | IT_ROCKETS;
+	}
+	else if (self.weapon == IT_LIGHTNING)
+	{
+		self.currentammo = self.ammo_cells;
+		self.weaponmodel = "progs/v_light.mdl";
+		//self.weaponframe = 0;
+		self.items = self.items | IT_CELLS;
+	}
+	else
+	{
+		self.currentammo = 0;
+		self.weaponmodel = "";
+		//self.weaponframe = 0;
+	}
+};
+
 void() W_SetCurrentAmmo =
 {
 	player_run(); // get out of any weapon firing states
@@ -1140,9 +1216,20 @@ void() W_ChangeWeapon =
 		}
 		else if (smashmode == 0)
 		{
-			fl = IT_SUPER_NAILGUN;
-			if (self.ammo_nails < 2)
-				am = 1;
+			if (self.weapon != IT_SUPER_NAILGUN)
+			{
+				fl = IT_SUPER_NAILGUN;
+				if (self.ammo_nails < 1)
+					am = 1;
+				sprint(self,"Nailgun Mode\n");
+			}
+			else
+			{
+				fl = IT_SHOTTY_NG;
+				if (self.ammo_nails < 10)
+					am = 1;
+				sprint(self,"Shotty Mode\n");
+			}
 		}
 	}
 	else if (self.impulse == 6)

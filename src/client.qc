@@ -898,7 +898,7 @@ void() PlayerPreThink =
 
 	if (ammoreload == 1)
 	{
-		W_SetCurrentAmmo();
+		W_SetCurrentAmmo2();
 		ammoreload = 0;
 	}
 
