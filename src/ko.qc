@@ -141,7 +141,7 @@ void() ItemLaunch
     if (self.classname != "player" && other.solid != SOLID_BSP)
     {
         self.think = SafeRemove;
-        self.nextthink = time + 5;
+        self.nextthink = time + 10;
         self.lasttouch = other; //this is saved to determine who gets the kill if the head vel kills somebody
         self.flags = self.flags - (self.flags & FL_ONGROUND);
         if (!other.savevel) self.velocity = self.velocity + other.velocity + '0 0 200';
