@@ -1352,6 +1352,12 @@ void() CycleWeaponCommand =
 		}
 		else if (self.weapon == IT_SUPER_NAILGUN)
 		{
+			self.weapon = IT_SHOTTY_NG;
+			if (self.ammo_rockets < 1)
+				am = 1;
+		}
+		else if (self.weapon == IT_SHOTTY_NG)
+		{
 			self.weapon = IT_GRENADE_LAUNCHER;
 			if (self.ammo_rockets < 1)
 				am = 1;
@@ -1410,9 +1416,15 @@ void() CycleWeaponBack =
 			if (self.ammo_nails < 1)
 				am = 1;
 		}
-		else if (self.weapon == IT_GRENADE_LAUNCHER)
+		else if (self.weapon == IT_SHOTTY_NG)
 		{
 			self.weapon = IT_SUPER_NAILGUN;
+			if (self.ammo_nails < 2)
+				am = 1;
+		}
+		else if (self.weapon == IT_GRENADE_LAUNCHER)
+		{
+			self.weapon = IT_SHOTTY_NG;
 			if (self.ammo_nails < 2)
 				am = 1;
 		}
