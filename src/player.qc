@@ -520,8 +520,8 @@ void(string gibname, float dm) ThrowHead =
 	self.movetype = MOVETYPE_BOUNCE;
 	self.takedamage = DAMAGE_NO;
 	self.solid = SOLID_BBOX;
+	self.nextthink = -1;
 	self.classname = "head";
-	self.nextthhink = -1;
 	self.touch = ItemLaunch;
 	self.view_ofs = '0 0 8';
 	setsize(self, '-16 -16 0', '16 16 56');
