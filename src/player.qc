@@ -521,6 +521,7 @@ void(string gibname, float dm) ThrowHead =
 	self.takedamage = DAMAGE_NO;
 	self.solid = SOLID_BBOX;
 	self.classname = "head";
+	self.nextthhink = -1;
 	self.touch = ItemLaunch;
 	self.view_ofs = '0 0 8';
 	setsize(self, '-16 -16 0', '16 16 56');

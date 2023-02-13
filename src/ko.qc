@@ -147,7 +147,6 @@ void() ItemLaunch
         if (!other.savevel) self.velocity = self.velocity + other.velocity + '0 0 200';
         else self.velocity = self.velocity + other.savevel + '0 0 600'; //insanely hacky but it works
         self.velocity_z = fabs(self.velocity_z);
-//        self.owner = other;
         if (self.damagevel >= 1000)
         {
             T_Damage(other,self,self.lasttouch,self.damagevel/20);
