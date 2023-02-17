@@ -66,7 +66,7 @@ void() W_FireAxe =
 	pbox.forward = v_forward;
 
     pbox.touch = Parry;
-	setsize(pbox,'-32 -32 -32','32 32 32');
+	setsize(pbox,'-48 -48 -48','48 48 48');
     setorigin(pbox,self.origin+'0 0 16'+(v_forward*10));
 	pbox.think = SUB_Remove;
 	pbox.nextthink = time + 0.1;

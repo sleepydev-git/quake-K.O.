@@ -49,7 +49,7 @@ void(vector kdir, float kdam) s_knockback =
         self.flags = self.flags - FL_ONGROUND;
     }
     self.bounce = 1;
-    if (smashmode == 1) self.dashcooldown = self.dashcooldown + kdam + (self.health / 10);
+    if (smashmode == 1) self.dashcooldown = self.dashcooldown + kdam + (self.health / 15);
     if (smashmode == 0) self.dashcooldown = self.dashcooldown + kdam + ((250-self.health) / 5);
     self.prevvel = self.velocity_z;
 }
