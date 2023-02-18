@@ -146,11 +146,15 @@ void() ItemLaunch
         self.flags = self.flags - (self.flags & FL_ONGROUND);
         if (!other.savevel) self.velocity = self.velocity + other.velocity + '0 0 200';
         else self.velocity = self.velocity + other.savevel + '0 0 600'; //insanely hacky but it works
+        if (self.velocity_x >= 3000) self.velocity_x = 3000;
+        if (self.velocity_x <= -3000) self.velocity_x = -3000;
+        if (self.velocity_y >= 3000) self.velocity_y = 3000;
+        if (self.velocity_y <= -3000) self.velocity_y = -3000;
         self.velocity_z = fabs(self.velocity_z);
-        if (self.damagevel >= 2000)
+        if (self.damagevel >= 1500)
         {
-            T_Damage(other,self,self.lasttouch,(self.damagevel-2000)/50);
-            self.velocity = -dir * self.velocity*0.75; //bounce off otherwise it causes issues
+            T_Damage(other,self,self.lasttouch,(self.damagevel-1500)/100);
+            self.velocity = -dir * self.velocity*0.5; //bounce off otherwise it causes issues
             //sprint(other,"bounce\n");
         }
     }
