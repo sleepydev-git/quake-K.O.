@@ -21,6 +21,7 @@ Planned Features
 -
 - Randomly spawning items
 - Items such as Quad, Lightning, and Railgun being timed powerups.
+- Horde Mode on KO maps for Singleplayer and Multiplayer.
 
 Credits
 -
