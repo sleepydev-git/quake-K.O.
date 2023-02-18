@@ -389,6 +389,7 @@ void() respawn =
 		SetNewParms();
 		// respawn
 		PutClientInServer();
+		self.items -= self.items & IT_NAILGUN; //hacky workaround for nailgun bug
 	}
 	else
 	{ // restart the entire server
