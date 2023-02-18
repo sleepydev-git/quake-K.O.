@@ -539,7 +539,7 @@ void() PutClientInServer =
 		spawn_tfog(self.origin + v_forward*20);
 	}
 
-	if (smashmode == 1)
+	if (smashmode == 1) //This is a fix for a weird bug
 		self.items -= self.items & IT_NAILGUN;
 
 	spawn_tdeath(self.origin, self);
