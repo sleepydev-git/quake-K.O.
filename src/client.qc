@@ -389,7 +389,7 @@ void() respawn =
 		SetNewParms();
 		// respawn
 		PutClientInServer();
-		self.items -= self.items & IT_NAILGUN; //hacky workaround for nailgun bug
+		//hacky workaround for nailgun bug
 	}
 	else
 	{ // restart the entire server
@@ -538,6 +538,9 @@ void() PutClientInServer =
 		makevectors(self.angles);
 		spawn_tfog(self.origin + v_forward*20);
 	}
+
+	if (smashmode == 1)
+		self.items -= self.items & IT_NAILGUN;
 
 	spawn_tdeath(self.origin, self);
 };
