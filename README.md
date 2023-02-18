@@ -13,8 +13,9 @@ Notes for mappers
 
 Features
 -
-- Projectiles can be parried with the axe.
-- Spread shot alt firing mode for the nailgun.
+- Compatibility with vanilla Quake maps.
+- A rebalanced and minimalist arsenal.
+- Remaster compatibility including map info file for easy lobby creation.
 - Funny head physics.
 
 Planned Features
