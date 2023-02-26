@@ -504,6 +504,7 @@ void() monster_ogre =
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
+	self.category = "monster";
 
 	setmodel(self, "progs/ogre.mdl");
 

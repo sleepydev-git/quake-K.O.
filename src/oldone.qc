@@ -279,6 +279,7 @@ void() monster_oldone =
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
+	self.category = "monster";
 
 	setmodel(self, "progs/oldone.mdl");
 	setsize(self, '-160 -128 -24', '160 128 256');

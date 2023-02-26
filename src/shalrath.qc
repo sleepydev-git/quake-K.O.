@@ -244,6 +244,7 @@ void() monster_shalrath =
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
+	self.category = "monster";
 
 	setmodel(self, "progs/shalrath.mdl");
 	setsize(self, VEC_HULL2_MIN, VEC_HULL2_MAX);

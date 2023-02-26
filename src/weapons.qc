@@ -1172,16 +1172,14 @@ void() W_ChangeWeapon =
 			if (self.weapon != IT_ROCKET_LAUNCHER)
 			{
 				fl = IT_ROCKET_LAUNCHER;
-				sprint(self,"Rocket Mode\n");
-				if (self.ammo_rockets < 1)
-					am = 1;
+				if (self.ammo_rockets < 1) am = 1;
+				else sprint(self,"Rocket Mode\n");
 			}
 			else
 			{
 				fl = IT_GRENADE_LAUNCHER;
-				sprint(self,"Grenade Mode\n");
-				if (self.ammo_rockets < 1)
-					am = 1;
+				if (self.ammo_rockets < 1) am = 1;
+				else sprint(self,"Rocket Mode\n");
 			}
 		}
 		else if (smashmode == 0)
@@ -1219,30 +1217,28 @@ void() W_ChangeWeapon =
 			if (self.weapon != IT_SUPER_NAILGUN)
 			{
 				fl = IT_SUPER_NAILGUN;
-				if (self.ammo_nails < 1)
-					am = 1;
-				sprint(self,"Nailgun Mode\n");
+				if (self.ammo_nails < 1) am = 1;
+				else sprint(self,"Nailgun Mode\n");
 			}
 			else
 			{
 				fl = IT_SHOTTY_NG;
-				if (self.ammo_nails < 10)
-					am = 1;
-				sprint(self,"Shotty Mode\n");
+				if (self.ammo_nails < 10) am = 1;
+				else sprint(self,"Shotty Mode\n");
 			}
 		}
 	}
 	else if (self.impulse == 6)
 	{
 		fl = IT_GRENADE_LAUNCHER;
-		if (self.ammo_rockets < 1)
-			am = 1;
+		if (self.ammo_rockets < 1) am = 1;
+		else sprint(self,"Grenade Mode\n");
 	}
 	else if (self.impulse == 7)
 	{
 		fl = IT_ROCKET_LAUNCHER;
-		if (self.ammo_rockets < 1)
-			am = 1;
+		if (self.ammo_rockets < 1) am = 1;
+		else sprint(self,"Rocket Mode\n");
 	}
 	else if (self.impulse == 8)
 	{
