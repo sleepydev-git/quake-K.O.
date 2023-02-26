@@ -275,6 +275,7 @@ void() monster_knight =
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
+	self.category = "monster";
 
 	setmodel(self, "progs/knight.mdl");
 

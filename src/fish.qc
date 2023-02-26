@@ -189,6 +189,7 @@ void() monster_fish =
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
+	self.category = "monster";
 
 	setmodel(self, "progs/fish.mdl");
 

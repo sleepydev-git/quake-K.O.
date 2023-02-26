@@ -216,6 +216,7 @@ void() monster_demon1 =
 
 	self.solid = SOLID_SLIDEBOX;
 	self.movetype = MOVETYPE_STEP;
+	self.category = "monster";
 
 	setmodel(self, "progs/demon.mdl");
 

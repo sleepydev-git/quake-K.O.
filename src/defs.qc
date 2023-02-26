@@ -427,6 +427,8 @@ float framecount;
 
 float skill;
 
+.string category;
+
 //================================================
 
 //
