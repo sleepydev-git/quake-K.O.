@@ -192,19 +192,19 @@ void() PrecacheMonsters =
 	precache_sound("horde/nyom.wav");
 	
 	// precache keys
-	if (world.worldtype == WORLDTYPE_MEDIEVAL || world.worldtype == WORLDTYPE_HUB)
+	if (world.worldtype == 0)
 	{
 		precache_sound ("misc/medkey.wav");
 		precache_model("progs/w_g_key.mdl"); // gold key
 		precache_model("progs/w_s_key.mdl"); // silver key
 	}
-	if (world.worldtype == WORLDTYPE_METAL)
+	if (world.worldtype == 1)
 	{
 		precache_sound ("misc/runekey.wav");
 		precache_model ("progs/m_g_key.mdl");
 		precache_model ("progs/m_s_key.mdl");
 	}
-	if (world.worldtype == WORLDTYPE_BASE)
+	if (world.worldtype == 2)
 	{
 		precache_sound2 ("misc/basekey.wav");
 		precache_model2 ("progs/b_g_key.mdl");
@@ -218,12 +218,13 @@ void() NextWave() {
     monster_chance = random()*10;
 }
 
-void() CheckHorde;
+void() CheckHorde {
+}
 
 void() HordeManager {
     PrecacheMonsters();
     if (!deathmatch) {
-        self.think = checkhorde();
+        self.think = CheckHorde;
         self.nextthink = time + 10;
     }
     else remove(self);
