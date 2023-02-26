@@ -419,6 +419,30 @@ entity() SpawnMonster {
 	}
     monster.origin = e.origin;
     monster.origin_z = monster.origin_z + 1;
+	monster.category = "monster";
+	monster.takedamage = DAMAGE_AIM;
+	monster.ideal_yaw = monster.angles * '0 1 0';
+	if (!monster.yaw_speed)
+		monster.yaw_speed = 20;
+	monster.view_ofs = '0 0 25';
+	monster.use = monster_use;
+	monster.solid = SOLID_BBOX;
+	
+	monster.flags = monster.flags | FL_MONSTER;
+	
+	//monster.enemy = HordeFindTarget(); // find a random living player
+	monster.enemy = find (world, classname, "player");
+	monster.think = FoundTarget;
+		
+	monster.nextthink = monster.nextthink + 0.1;
+	monster.nextthink = time + 0.1;
+	
+	//spawn_tdeath_fast (monster.origin, monster);
+	//spawn_tfog(monster.origin);
+	
+	monster.owner = self;
+	if (monster.classname != "monster_zombie") // don't count zombies toward total goal
+		total_monsters = total_monsters + 1;
 }
 
 void() info_monster_spawner {
