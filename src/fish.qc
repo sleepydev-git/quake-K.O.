@@ -194,7 +194,8 @@ void() monster_fish =
 	setmodel(self, "progs/fish.mdl");
 
 	setsize(self, '-16 -16 -24', '16 16 24');
-	self.health = 25;
+	if (smashmode == 0) self.health = 25;
+	if (smashmode == 1) self.health = 500;
 
 	self.th_stand = f_stand1;
 	self.th_walk = f_walk1;

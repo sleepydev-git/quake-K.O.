@@ -312,7 +312,8 @@ void() monster_army =
 	setmodel(self, "progs/soldier.mdl");
 
 	setsize(self, '-16 -16 -24', '16 16 40');
-	self.health = 30;
+	if (smashmode == 0) self.health = 30;
+	if (smashmode == 1) self.health = 300;
 
 	self.th_stand = army_stand1;
 	self.th_walk = army_walk1;

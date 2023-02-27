@@ -189,7 +189,7 @@ void() PrecacheMonsters =
 	precache_sound ("items/protect3.wav");
 	
 	// new horde sounds
-	precache_sound("horde/nyom.wav");
+	//precache_sound("horde/nyom.wav");
 	
 	// precache keys
 	if (world.worldtype == 0)
@@ -232,32 +232,33 @@ void() HordeManager {
 
 entity() SpawnMonster {
     .string class;
-    entity e;
-    e = find(world, classname, "info_monster_spawner");
+    /*entity e;
+    e = find(world, classname, "info_monster_spawner");*/
     monster_chance = random()*10;
-
+	self.nextthink = time + (random()*20)+5;
     local entity monster;
     monster = spawn();
-
+	monster.think = FoundTarget;
+	monster.nextthink = time + 0.1;
     monster.movetype = MOVETYPE_STEP;
     monster.flags = monster.flags | FL_MONSTER;
     if (monster_chance >= 0 && monster_chance < 1) monster.class = "shambler";
     if (monster_chance >= 1 && monster_chance < 2) monster.class = "shalrath";
     if (monster_chance >= 2 && monster_chance < 3) monster.class = "ogre";
     if (monster_chance >= 3 && monster_chance < 4) monster.class = "hellknight";
-    if (monster_chance >= 5 && monster_chance < 5) monster.class = "knight";
-    if (monster_chance >= 6 && monster_chance < 6) monster.class = "enforcer";
-    if (monster_chance >= 7 && monster_chance < 7) monster.class = "enforcer";
-    if (monster_chance >= 8 && monster_chance < 8) monster.class = "grunt";
-    if (monster_chance >= 9 && monster_chance < 10) monster.class = "grunt";
+    if (monster_chance >= 4 && monster_chance < 5) monster.class = "knight";
+    if (monster_chance >= 5 && monster_chance < 6) monster.class = "enforcer";
+    if (monster_chance >= 6 && monster_chance < 7) monster.class = "enforcer";
+    if (monster_chance >= 7 && monster_chance < 8) monster.class = "grunt";
+    if (monster_chance >= 8 && monster_chance < 10) monster.class = "grunt";
 
-    if (monster.class== "knight")
+    if (monster.class == "knight")
 	{
 		setmodel (monster, "progs/knight.mdl");
 		setsize (monster, '-16 -16 -24', '16 16 40');
 		self.origin = self.origin + '0 0 24'; // offset based on size
 		monster.classname = "monster_knight";
-		monster.health = 75;
+		monster.health = 150;
 		monster.th_stand = knight_stand1;
 		monster.th_walk = knight_walk1;
 		monster.th_run = knight_run1;
@@ -265,13 +266,13 @@ entity() SpawnMonster {
 		monster.th_pain = knight_pain;
 		monster.th_die = knight_die;
 	}
-	else if (monster.class== "hellknight")
+	else if (monster.class == "hellknight")
 	{
 		setmodel (monster, "progs/hknight.mdl");
 		setsize (monster, '-16 -16 -24', '16 16 40');
 		self.origin = self.origin + '0 0 24';
 		monster.classname = "monster_hell_knight";
-		monster.health = 250;
+		monster.health = 75;
 		monster.th_stand = hknight_stand1;
 		monster.th_walk = hknight_walk1;
 		monster.th_run = hknight_run1;
@@ -280,13 +281,13 @@ entity() SpawnMonster {
 		monster.th_pain = hknight_pain;
 		monster.th_die = hknight_die;
 	}
-	else if (monster.class== "dog")
+	else if (monster.class == "dog")
 	{
 		setmodel (monster, "progs/dog.mdl");
 		setsize (monster, '-32 -32 -24', '32 32 40');
 		self.origin = self.origin + '0 0 24';
 		monster.classname = "monster_dog";
-		monster.health = 25;
+		monster.health = 500;
 		monster.th_stand = dog_stand1;
 		monster.th_walk = dog_walk1;
 		monster.th_run = dog_run1;
@@ -295,13 +296,13 @@ entity() SpawnMonster {
 		monster.th_melee = dog_atta1;
 		monster.th_missile = dog_leap1;
 	}
-	else if (monster.class== "demon")
+	else if (monster.class == "demon")
 	{
 		setmodel (monster, "progs/demon.mdl");
 
 		setsize (monster, VEC_HULL2_MIN, VEC_HULL2_MAX);
 		monster.classname = "monster_demon1";
-		monster.health = 300;
+		monster.health = 25;
 		self.origin = self.origin + '0 0 48';
 		monster.th_stand = demon1_stand1;
 		monster.th_walk = demon1_walk1;
@@ -311,12 +312,12 @@ entity() SpawnMonster {
 		monster.th_missile = demon1_jump1;
 		monster.th_pain = demon1_pain;
 	}
-	else if (monster.class== "ogre")
+	else if (monster.class == "ogre")
 	{
 		setmodel (monster, "progs/ogre.mdl");
 		setsize (monster, VEC_HULL2_MIN, VEC_HULL2_MAX);
 		monster.classname = "monster_ogre";
-		monster.health = 200;
+		monster.health = 25;
 		self.origin = self.origin + '0 0 32';
 		monster.th_stand = ogre_stand1;
 		monster.th_walk = ogre_walk1;
@@ -326,12 +327,12 @@ entity() SpawnMonster {
 		monster.th_missile = ogre_nail1;
 		monster.th_pain = ogre_pain;
 	}
-	else if (monster.class== "grunt")
+	else if (monster.class == "grunt")
 	{
 		setmodel (monster, "progs/soldier.mdl");
 		setsize (monster, '-16 -16 -24', '16 16 40');
 		monster.classname = "monster_army";
-		monster.health = 30;
+		monster.health = 300;
 		self.origin = self.origin + '0 0 24';
 		monster.th_stand = army_stand1;
 		monster.th_walk = army_walk1;
@@ -340,12 +341,12 @@ entity() SpawnMonster {
 		monster.th_pain = army_pain;
 		monster.th_die = army_die;
 	}
-	else if (monster.class== "enforcer")
+	else if (monster.class == "enforcer")
 	{
 		setmodel (monster, "progs/enforcer.mdl");
 		setsize (monster, '-16 -16 -24', '16 16 40');
 		monster.classname = "monster_enforcer";
-		monster.health = 80;
+		monster.health = 50;
 		self.origin = self.origin + '0 0 24';
 		monster.th_stand = enf_stand1;
 		monster.th_walk = enf_walk1;
@@ -354,12 +355,12 @@ entity() SpawnMonster {
 		monster.th_die = enf_die;
 		monster.th_missile = enf_atk1;
 	}
-	else if (monster.class== "shambler")
+	else if (monster.class == "shambler")
 	{
 		setmodel (monster, "progs/shambler.mdl");
 		setsize (monster, VEC_HULL2_MIN, VEC_HULL2_MAX);
 		monster.classname = "monster_shambler";
-		monster.health = 600;
+		monster.health = 100;
 		self.origin = self.origin + '0 0 32';
 		monster.th_stand = sham_stand1;
 		monster.th_walk = sham_walk1;
@@ -369,13 +370,13 @@ entity() SpawnMonster {
 		monster.th_missile = sham_magic1;
 		monster.th_pain = sham_pain;
 	}
-	else if (monster.class== "shalrath")
+	else if (monster.class == "shalrath")
 	{
 		setmodel (monster, "progs/shalrath.mdl");
 		setsize (monster, VEC_HULL2_MIN, VEC_HULL2_MAX);
 		monster.classname = "monster_shalrath";
 		self.origin = self.origin + '0 0 32';
-		monster.health = 400;
+		monster.health = 0;
 		monster.th_stand = shal_stand;
 		monster.th_walk = shal_walk1;
 		monster.th_run = shal_run1;
@@ -383,14 +384,14 @@ entity() SpawnMonster {
 		monster.th_pain = shalrath_pain;
 		monster.th_missile = shal_attack1;
 	}
-	else if (monster.class== "wizard")
+	else if (monster.class == "wizard")
 	{
 		setmodel (monster, "progs/wizard.mdl");
 		monster.flags = monster.flags | FL_FLY; // special behavior
 		monster.classname = "monster_wizard";
 		setsize (monster, VEC_HULL_MIN, VEC_HULL_MAX);
 		self.origin = self.origin + '0 0 32';
-		monster.health = 80;
+		monster.health = 999;
 		monster.th_stand = wiz_stand1;
 		monster.th_walk = wiz_walk1;
 		monster.th_run = wiz_run1;
@@ -398,13 +399,13 @@ entity() SpawnMonster {
 		monster.th_pain = Wiz_Pain;
 		monster.th_die = wiz_die;
 	}
-	else if (monster.class== "zombie")
+	else if (monster.class == "zombie")
 	{
 		setmodel (monster, "progs/zombie.mdl");
 		setsize (monster, '-16 -16 -24', '16 16 40');
 		monster.classname = "monster_zombie";
 		self.origin = self.origin + '0 0 32';
-		monster.health = 60;
+		monster.health = 0;
 		monster.th_stand = zombie_stand1;
 		monster.th_walk = zombie_walk1;
 		monster.th_run = zombie_run1;
@@ -417,35 +418,31 @@ entity() SpawnMonster {
 	{
 		dprint("ERROR: No monster provided");
 	}
-    monster.origin = e.origin;
-    monster.origin_z = monster.origin_z + 1;
+    	monster.origin = self.origin;
+    	monster.origin_z = monster.origin_z + 1;
 	monster.category = "monster";
 	monster.takedamage = DAMAGE_AIM;
 	monster.ideal_yaw = monster.angles * '0 1 0';
 	if (!monster.yaw_speed)
 		monster.yaw_speed = 20;
 	monster.view_ofs = '0 0 25';
-	monster.use = monster_use;
+	//monster.use = monster_use;
 	monster.solid = SOLID_BBOX;
 	
 	monster.flags = monster.flags | FL_MONSTER;
 	
 	//monster.enemy = HordeFindTarget(); // find a random living player
 	monster.enemy = find (world, classname, "player");
-	monster.think = FoundTarget;
-		
-	monster.nextthink = monster.nextthink + 0.1;
-	monster.nextthink = time + 0.1;
 	
 	//spawn_tdeath_fast (monster.origin, monster);
-	//spawn_tfog(monster.origin);
+	spawn_tfog(monster.origin);
 	
 	monster.owner = self;
-	if (monster.classname != "monster_zombie") // don't count zombies toward total goal
-		total_monsters = total_monsters + 1;
+	/*if (monster.classname != "monster_zombie") // don't count zombies toward total goal
+		total_monsters = total_monsters + 1;*/
 }
 
 void() info_monster_spawner {
     self.think = SpawnMonster;
-    self.nextthink = time + 10;
+    self.nextthink = time + random()*10;
 }

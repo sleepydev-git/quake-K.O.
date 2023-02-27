@@ -368,7 +368,8 @@ void() monster_enforcer =
 	setmodel(self, "progs/enforcer.mdl");
 
 	setsize(self, '-16 -16 -24', '16 16 40');
-	self.health = 80;
+	if (smashmode == 0) self.health = 80;
+	if (smashmode == 1) self.health = 50;
 
 	self.th_stand = enf_stand1;
 	self.th_walk = enf_walk1;

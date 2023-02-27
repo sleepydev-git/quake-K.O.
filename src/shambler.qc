@@ -390,7 +390,8 @@ void() monster_shambler =
 	setmodel(self, "progs/shambler.mdl");
 
 	setsize(self, VEC_HULL2_MIN, VEC_HULL2_MAX);
-	self.health = 600;
+	if (smashmode == 0) self.health = 600;
+	if (smashmode == 1) self.health = 0;
 
 	self.th_stand = sham_stand1;
 	self.th_walk = sham_walk1;

@@ -530,7 +530,8 @@ void() monster_zombie =
 	setmodel(self, "progs/zombie.mdl");
 
 	setsize(self, '-16 -16 -24', '16 16 40');
-	self.health = 60;
+	if (smashmode == 0) self.health = 60;
+	if (smashmode == 1) self.health = 0;
 
 	self.th_stand = zombie_stand1;
 	self.th_walk = zombie_walk1;

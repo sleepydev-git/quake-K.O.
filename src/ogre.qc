@@ -509,7 +509,8 @@ void() monster_ogre =
 	setmodel(self, "progs/ogre.mdl");
 
 	setsize(self, VEC_HULL2_MIN, VEC_HULL2_MAX);
-	self.health = 200;
+	if (smashmode == 0) self.health = 200;
+	if (smashmode == 1) self.health = 30;
 
 	self.th_stand = ogre_stand1;
 	self.th_walk = ogre_walk1;

@@ -221,7 +221,8 @@ void() monster_demon1 =
 	setmodel(self, "progs/demon.mdl");
 
 	setsize(self, VEC_HULL2_MIN, VEC_HULL2_MAX);
-	self.health = 300;
+	if (smashmode == 0) self.health = 300;
+	if (smashmode == 1) self.health = 25;
 
 	self.th_stand = demon1_stand1;
 	self.th_walk = demon1_walk1;

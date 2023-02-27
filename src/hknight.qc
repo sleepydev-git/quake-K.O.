@@ -456,7 +456,8 @@ void() monster_hell_knight =
 	setmodel(self, "progs/hknight.mdl");
 
 	setsize(self, '-16 -16 -24', '16 16 40');
-	self.health = 250;
+	if (smashmode == 0) self.health = 250;
+	if (smashmode == 1) self.health = 75;
 
 	self.th_stand = hknight_stand1;
 	self.th_walk = hknight_walk1;
