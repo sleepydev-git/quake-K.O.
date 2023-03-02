@@ -13,7 +13,7 @@ void() func_refill
     self.use = Refill;
 }
 
-void() KillSky
+void() killsky
 {
     T_Damage(other,other.lastattacker,other.lastattacker,-999);
 }
@@ -23,7 +23,7 @@ void() func_killsky
 	self.movetype=MOVETYPE_PUSH;
 	self.solid = SOLID_BSP;
 	setmodel(self, self.model);
-    self.touch = KillSky;
+    self.touch = killsky;
 }
 
 void() func_randomitem
