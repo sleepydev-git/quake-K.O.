@@ -1,7 +1,12 @@
 //Special thanks to Quake remastered team who's Horde mode code this is loosely based on.
 
 .float score;
-.float wave;
+float wave;
+float monstercount;
+float spawnercount;
+float spawnsleft;
+float lastcount;
+float kills;
 float monster_chance;
 
 void() PrecacheMonsters =
@@ -210,32 +215,62 @@ void() PrecacheMonsters =
 		precache_model2 ("progs/b_g_key.mdl");
 		precache_model2 ("progs/b_s_key.mdl");
 	}
-};
+}
+
+entity() SpawnMonster;
+
+void() info_monster_spawner {
+	self.think = SpawnMonster;
+	self.nextthink = time + 1;
+	spawnercount++;
+	dprint(ftos(spawnercount));
+	dprint("\n");
+}
 
 void() NextWave() {
-    entity e;
-    e = find(world, classname, "info_monster_spawner");
-    monster_chance = random()*10;
+	wave = wave + 1;
+	dprint("Next Wave\n");
+	monstercount = ceil((wave*spawnercount)*0.5);
+	spawnsleft = monstercount;
 }
 
 void() CheckHorde {
+	dprint("Checking...\n");
+	self.nextthink = time + 1;
+	kills = killed_monsters - lastcount;
+	if (kills >= monstercount) NextWave();
+	dprint(ftos(kills));
+	dprint(ftos(monstercount));
+}
+
+void() WaveEnd {
+	local entity e;
+	e = find(world,classname,"player");
+	dprint("Wave Complete\n");
+	kills = 0;
+	NextWave();
 }
 
 void() HordeManager {
-    PrecacheMonsters();
-    if (!deathmatch) {
+	if (!deathmatch) {
         self.think = CheckHorde;
-        self.nextthink = time + 10;
+        self.nextthink = time + 1;
     }
     else remove(self);
+    PrecacheMonsters();
+	if (wave == 0) {
+		wave = 1;
+		NextWave();
+	}
 }
 
 entity() SpawnMonster {
     .string class;
+	self.nextthink = time + (random()*10)+5;
     /*entity e;
     e = find(world, classname, "info_monster_spawner");*/
+	if (spawnsleft > 0) {
     monster_chance = random()*10;
-	self.nextthink = time + (random()*20)+5;
     local entity monster;
     monster = spawn();
 	monster.think = FoundTarget;
@@ -249,10 +284,10 @@ entity() SpawnMonster {
     if (monster_chance >= 4 && monster_chance < 5) monster.class = "knight";
     if (monster_chance >= 5 && monster_chance < 6) monster.class = "enforcer";
     if (monster_chance >= 6 && monster_chance < 7) monster.class = "enforcer";
-    if (monster_chance >= 7 && monster_chance < 8) monster.class = "grunt";
-    if (monster_chance >= 8 && monster_chance < 10) monster.class = "grunt";
+    if (monster_chance >= 7 && monster_chance < 8) monster.class = "fiend";
+    if (monster_chance >= 8 && monster_chance < 10) monster.class = "dog";
 
-    if (monster.class == "knight")
+	if (monster.class == "knight")
 	{
 		setmodel (monster, "progs/knight.mdl");
 		setsize (monster, '-16 -16 -24', '16 16 40');
@@ -418,15 +453,18 @@ entity() SpawnMonster {
 	{
 		dprint("ERROR: No monster provided");
 	}
-    	monster.origin = self.origin;
-    	monster.origin_z = monster.origin_z + 1;
+    
+    monster.origin = self.origin;
+    monster.origin_z = monster.origin_z + 1;
+	monster.origin_x = monster.origin_x + random()*5;
+	monster.origin_y = monster.origin_y + random()*5;
 	monster.category = "monster";
 	monster.takedamage = DAMAGE_AIM;
 	monster.ideal_yaw = monster.angles * '0 1 0';
 	if (!monster.yaw_speed)
 		monster.yaw_speed = 20;
 	monster.view_ofs = '0 0 25';
-	//monster.use = monster_use;
+	monster.use = monster_use;
 	monster.solid = SOLID_BBOX;
 	
 	monster.flags = monster.flags | FL_MONSTER;
@@ -440,9 +478,8 @@ entity() SpawnMonster {
 	monster.owner = self;
 	/*if (monster.classname != "monster_zombie") // don't count zombies toward total goal
 		total_monsters = total_monsters + 1;*/
-}
-
-void() info_monster_spawner {
-    self.think = SpawnMonster;
-    self.nextthink = time + random()*10;
+	spawnsleft = spawnsleft - 1;
+	dprint(ftos(spawnsleft));
+	dprint(" Monsters Left\n");
+	}
 }
