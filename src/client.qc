@@ -77,7 +77,7 @@ void() SetNewParms =
 	CheckSmashmode();
 	if (smashmode == 1)
 	{
-		parm1 = IT_AXE | IT_ROCKET_LAUNCHER | IT_GRENADE_LAUNCHER | IT_SHOTTY_NG | IT_SUPER_NAILGUN;
+		parm1 = IT_AXE | IT_ROCKET_LAUNCHER | IT_SUPER_NAILGUN;
 		parm2 = 1;
 		parm3 = 0;
 		parm4 = 0;
@@ -99,6 +99,8 @@ void() SetNewParms =
 		parm8 = 1;
 		parm9 = 0;
 	}
+	self.weapmod_nailgun == 1;
+	self.weapmod_rocket == 1;
 }
 
 void() DecodeLevelParms =
@@ -899,6 +901,7 @@ void() PlayerPreThink =
 
 	CheckBounce();
 	CheckDash();
+	CheckKOImpulse();
 
 	if (ammoreload == 1)
 	{

@@ -459,6 +459,7 @@ void() weapon_touch =
 			return;
 		hadammo = other.ammo_rockets;
 		new = IT_SUPER_NAILGUN;
+		self.weapmod_nailgun == 1;
 		other.ammo_nails = other.ammo_nails + 30;
 	}
 	else if (self.classname == "weapon_supershotgun")
@@ -476,6 +477,7 @@ void() weapon_touch =
 			return;
 		hadammo = other.ammo_rockets;
 		new = IT_ROCKET_LAUNCHER;
+		self.weapmod_rocket == 1;
 		other.ammo_rockets = other.ammo_rockets + 5;
 	}
 	else if (self.classname == "weapon_grenadelauncher")

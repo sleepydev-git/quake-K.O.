@@ -16,39 +16,40 @@ float ammoreload;
 .string entity_type;
 .float weight;
 .float damagevel;
+.float weapmod_nailgun;
+.float weapmod_rocket;
 .entity lasttouch;
 .vector savevel;
-
-//if (deathmatch == 1)No Items
-//if (deathmatch == 2)Random Items
-//if (deathmatch == 3)Map Items
+.float lastweap;
 
 void() CheckSmashmode()
 {
     entity spot;
-	spot = find(world, classname, "func_killsky");
-    if (spot) smashmode = 1; else smashmode = 0;
+	spot = find(world, classname, "func_killsky"); //If "func_killsky", the boundary entity, is detected
+    if (spot) smashmode = 1; else smashmode = 0; //Change map to Smashmode instead of HP mode.
 }
 
 void(vector kdir, float kdam) s_knockback =
 {
     if (smashmode == 1)
     {
-        self.velocity = self.velocity+('0 0 150')+(((kdir*self.health*knockback)+(kdir*kdam*knockback)));
+        self.velocity = self.velocity+('0 0 150')+(((kdir*self.health*knockback)+(kdir*kdam*knockback))); //If Smashmode = 1, knockback is calculated by how high health is.
     }
         
     else if (smashmode == 0)
     {
         local float hp = self.health;
         if (self.health >= 250) hp = 250;
-        self.velocity = self.velocity+('0 0 150')+(((kdir*(250-hp)*knockback)+(kdir*kdam*knockback)));
+        self.velocity = self.velocity+('0 0 150')+(((kdir*(250-hp)*knockback)+(kdir*kdam*knockback))); //If Smashmode = 0, knockback is calcualted by how close player health is to 0.
     }
-    if (self.flags & FL_ONGROUND)
+    if (self.flags & FL_ONGROUND) //Remove entities from ground.
     {
         self.velocity_z = fabs(self.velocity_z);
         self.flags = self.flags - FL_ONGROUND;
     }
-    self.bounce = 1;
+    //Enable dash cooldown period and bounce.
+    self.bounce = 1; 
+    //Dash cooldown is calculated by adding the current cooldown value + damage + current health. Making combos ridiculously effective.
     if (smashmode == 1) self.dashcooldown = self.dashcooldown + kdam + (self.health / 15);
     if (smashmode == 0) self.dashcooldown = self.dashcooldown + kdam + ((250-self.health) / 5);
     self.prevvel = self.velocity_z;
@@ -58,14 +59,13 @@ void() CheckBounce
 {
     if (self.bounce == 1)
     {
-        particle(self.origin,'10 10 10',7+(random()*5),5);
+        particle(self.origin,'10 10 10',7+(random()*5),5); //Smoke trails for recently knocked entities.
         if (self.flags & FL_ONGROUND)
         {
-            self.dashcount = 2;
-            if (fabs(self.prevvel) >= 100)
+            if (fabs(self.prevvel) >= 100) //If z velocity is over 100 in either direction
             {
                 self.flags = self.flags - FL_ONGROUND;
-                self.velocity_z = (fabs(self.prevvel) * 0.5) + 20;
+                self.velocity_z = (fabs(self.prevvel) * 0.5) + 20; //Bounce!
                 self.prevvel = self.velocity_z;
             }
         }
@@ -74,12 +74,12 @@ void() CheckBounce
 
 void() CheckDash
 {
-    if (self.flags & FL_ONGROUND && self.dashcount != 2) 
+    if (self.flags & FL_ONGROUND && self.dashcount != 2)  //
     {
-        self.dashcount = 2;
+        self.dashcount = 2; //If on ground, dash count is refilled.
         sound(self,CHAN_VOICE,"player/land.wav",1,ATTN_NORM);
     }
-    if (self.impulse == 100)
+    if (self.impulse == 100) //Dash impulse
     {
         if (self.dashcount > 0 && self.dashok == 1)
         {
@@ -132,6 +132,56 @@ void() SafeRemove
     self.solid = SOLID_NOT;
 }
 
+void(float swap) SwapWeaponMods {
+    if (swap == 0) {
+        if (self.weapon == IT_SUPER_NAILGUN)
+        {
+            if (self.weapmod_nailgun == 2) {
+                self.weapmod_nailgun = 1;
+                sprint(self,"Nailgun Mode\n");
+                return;
+            }
+            if (self.weapmod_nailgun == 1) {
+                self.weapmod_nailgun = 2;
+                sprint(self,"Shotty Mode\n");
+                return;
+            }
+            if (self.weapmod_nailgun == 0) {
+                self.weapmod_nailgun = 1;
+                return;
+            }
+        }
+        if (self.weapon == IT_ROCKET_LAUNCHER) {
+            if (self.weapmod_rocket == 2) {
+                self.weapmod_rocket = 1;
+                sprint(self,"Rocket Mode\n");
+                return;
+            }
+            if (self.weapmod_rocket == 1) {
+                self.weapmod_rocket = 2;
+                sprint(self,"Grenade Mode\n");
+                return;
+            }
+            if (self.weapmod_rocket == 0) {
+                self.weapmod_rocket = 1;
+                return;
+            }
+        }
+    }
+    if (swap >= 1) {
+        if (self.weapon == IT_SUPER_NAILGUN) self.weapmod_nailgun = swap;
+        if (self.weapon == IT_ROCKET_LAUNCHER) self.weapmod_rocket = swap;
+    }
+}
+
+void() CheckKOImpulse
+{
+	if (self.impulse == 101) //Swap weapon mods
+	{
+        SwapWeaponMods(0);
+	}
+}
+
 void() ItemLaunch
 {
     vector dir;
@@ -151,7 +201,7 @@ void() ItemLaunch
         if (self.velocity_y >= 3000) self.velocity_y = 3000;
         if (self.velocity_y <= -3000) self.velocity_y = -3000;
         self.velocity_z = fabs(self.velocity_z);
-        if (self.damagevel >= 1500)
+        if (self.damagevel >= 1500 && other != self.lasttouch)
         {
             T_Damage(other,self,self.lasttouch,(self.damagevel-1500)/100);
             self.velocity = -dir * self.velocity*0.5; //bounce off otherwise it causes issues
