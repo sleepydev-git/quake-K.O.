@@ -217,16 +217,6 @@ void() PrecacheMonsters =
 	}
 }
 
-entity() SpawnMonster;
-
-void() info_monster_spawner {
-	self.think = SpawnMonster;
-	self.nextthink = time + 1;
-	spawnercount++;
-	dprint(ftos(spawnercount));
-	dprint("\n");
-}
-
 void() NextWave() {
 	wave = wave + 1;
 	dprint("Next Wave\n");
@@ -240,7 +230,7 @@ void() CheckHorde {
 	kills = killed_monsters - lastcount;
 	if (kills >= monstercount) NextWave();
 	dprint(ftos(kills));
-	dprint(ftos(monstercount));
+	dprint(" Kills\n");
 }
 
 void() WaveEnd {
@@ -264,7 +254,7 @@ void() HordeManager {
 	}
 }
 
-entity() SpawnMonster {
+void() SpawnMonster {
     .string class;
 	self.nextthink = time + (random()*10)+5;
     /*entity e;
@@ -273,19 +263,17 @@ entity() SpawnMonster {
     monster_chance = random()*10;
     local entity monster;
     monster = spawn();
-	monster.think = FoundTarget;
-	monster.nextthink = time + 0.1;
     monster.movetype = MOVETYPE_STEP;
     monster.flags = monster.flags | FL_MONSTER;
-    if (monster_chance >= 0 && monster_chance < 1) monster.class = "shambler";
+    if (monster_chance < 1) monster.class = "shambler";
     if (monster_chance >= 1 && monster_chance < 2) monster.class = "shalrath";
     if (monster_chance >= 2 && monster_chance < 3) monster.class = "ogre";
     if (monster_chance >= 3 && monster_chance < 4) monster.class = "hellknight";
     if (monster_chance >= 4 && monster_chance < 5) monster.class = "knight";
     if (monster_chance >= 5 && monster_chance < 6) monster.class = "enforcer";
     if (monster_chance >= 6 && monster_chance < 7) monster.class = "enforcer";
-    if (monster_chance >= 7 && monster_chance < 8) monster.class = "fiend";
-    if (monster_chance >= 8 && monster_chance < 10) monster.class = "dog";
+    if (monster_chance >= 7 && monster_chance < 8) monster.class = "demon";
+    if (monster_chance >= 8) monster.class = "dog";
 
 	if (monster.class == "knight")
 	{
@@ -466,6 +454,8 @@ entity() SpawnMonster {
 	monster.view_ofs = '0 0 25';
 	monster.use = monster_use;
 	monster.solid = SOLID_BBOX;
+	monster.nextthink = time + 0.1;
+	monster.think = HuntTarget;
 	
 	monster.flags = monster.flags | FL_MONSTER;
 	
@@ -480,6 +470,14 @@ entity() SpawnMonster {
 		total_monsters = total_monsters + 1;*/
 	spawnsleft = spawnsleft - 1;
 	dprint(ftos(spawnsleft));
-	dprint(" Monsters Left\n");
+	dprint(" Spawns Left\n");
 	}
+}
+
+void() info_monster_spawner {
+	self.think = SpawnMonster;
+	self.nextthink = time + 1;
+	spawnercount++;
+	dprint(ftos(spawnercount));
+	dprint("\n");
 }
