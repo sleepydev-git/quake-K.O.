@@ -1148,10 +1148,10 @@ void() W_ChangeWeapon =
 		if (smashmode == 1)
 		{
 			if (self.weapon == IT_SUPER_NAILGUN) b = 0;
+			else b = -1;
 			fl = IT_SUPER_NAILGUN;
 			if (self.ammo_nails < 2)
-				am = 1;
-			
+				am = 1;	
 		}
 		else if (smashmode == 0)
 		{
@@ -1165,6 +1165,7 @@ void() W_ChangeWeapon =
 		if (smashmode == 1)
 		{
 			if (self.weapon == IT_ROCKET_LAUNCHER) b = 0;
+			else b = -1;
 			fl = IT_ROCKET_LAUNCHER;
 			if (self.ammo_rockets < 1)
 				am = 1;
@@ -1209,11 +1210,10 @@ void() W_ChangeWeapon =
 		}
 		else if (smashmode == 0)
 		{
-			if (self.weapon = IT_SUPER_NAILGUN) b = 0;
-			else {
-				fl = IT_SUPER_NAILGUN;
-				if (self.ammo_nails < 1) am = 1;
-			}
+			if (self.weapon == IT_SUPER_NAILGUN) b = 0;
+			else b = -1;
+			fl = IT_SUPER_NAILGUN;
+			if (self.ammo_nails < 1) am = 1;
 		}
 	}
 	else if (self.impulse == 6)
@@ -1264,7 +1264,7 @@ void() W_ChangeWeapon =
 // set weapon, set ammo
 //
 	self.weapon = fl;
-	SwapWeaponMods(b);
+	if (b > -1) SwapWeaponMods(b);
 	W_SetCurrentAmmo();
 };
 

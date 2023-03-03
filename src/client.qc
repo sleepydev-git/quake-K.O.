@@ -99,8 +99,8 @@ void() SetNewParms =
 		parm8 = 1;
 		parm9 = 0;
 	}
-	self.weapmod_nailgun == 1;
-	self.weapmod_rocket == 1;
+	self.weapmod_nailgun = 1;
+	self.weapmod_rocket = 1;
 }
 
 void() DecodeLevelParms =

@@ -204,7 +204,7 @@ void() ItemLaunch
         if (self.damagevel >= 1500 && other != self.lasttouch)
         {
             T_Damage(other,self,self.lasttouch,(self.damagevel-1500)/100);
-            self.velocity = -dir * self.velocity*0.5; //bounce off otherwise it causes issues
+            self.velocity = -dir * self.velocity*'0.5 0.5 0.5'; //bounce off otherwise it causes issues
             //sprint(other,"bounce\n");
         }
     }
