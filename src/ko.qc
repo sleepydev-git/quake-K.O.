@@ -209,3 +209,24 @@ void() ItemLaunch
         }
     }
 }
+
+void centerprint_all(string s) //Shamelessly ripped from Quake remaster code. Thanks guys!
+{
+	entity e = find(world, classname, "player");
+	while(e)
+	{
+		centerprint(e, s);
+		e = find(e, classname, "player");
+	}
+	/*
+	entity e = nextent(world);
+	while(e)
+	{
+		if(e.flags & FL_CLIENT)
+		{
+			centerprint(e, s);
+		}
+		e = nextent(e);
+	}
+	*/
+}
