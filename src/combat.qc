@@ -111,6 +111,7 @@ void(entity targ, entity attacker) Killed =
 	self = oself;
 };
 
+void(entity attacker,entity targ) AddScore;
 
 /*
 ============
@@ -202,6 +203,8 @@ void(entity targ, entity inflictor, entity attacker, float damage) T_Damage=
 	if (targ.health <= 0)
 	{
 		Killed(targ, attacker);
+		if (targ.worth) AddScore(attacker,targ); //Horde Mode calls
+		targ.hordedead = 1;
 		return;
 	}
 

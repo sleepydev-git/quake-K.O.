@@ -1,17 +1,6 @@
 //Special thanks to Quake remastered team who's Horde mode code this is loosely based on.
 
-.float score;
-float wave;
-float monstercount;
-float spawnercount;
-float spawnsleft;
-float lastcount;
-float kills;
-float monster_chance;
-float countdown;
-
-void() PrecacheMonsters =
-{
+void() PrecacheMonsters {
 	// knight
 	precache_model ("progs/knight.mdl");
 	precache_model ("progs/h_knight.mdl");
@@ -198,42 +187,114 @@ void() PrecacheMonsters =
 	//precache_sound("horde/nyom.wav");
 	
 	// precache keys
-	if (world.worldtype == 0)
-	{
+	if (world.worldtype == 0) {
 		precache_sound ("misc/medkey.wav");
 		precache_model("progs/w_g_key.mdl"); // gold key
 		precache_model("progs/w_s_key.mdl"); // silver key
 	}
-	if (world.worldtype == 1)
-	{
+	if (world.worldtype == 1) {
 		precache_sound ("misc/runekey.wav");
 		precache_model ("progs/m_g_key.mdl");
 		precache_model ("progs/m_s_key.mdl");
 	}
-	if (world.worldtype == 2)
-	{
+	if (world.worldtype == 2) {
 		precache_sound2 ("misc/basekey.wav");
 		precache_model2 ("progs/b_g_key.mdl");
 		precache_model2 ("progs/b_s_key.mdl");
 	}
 }
 
-entity() SpawnMonster;
-
+void() SpawnMonster;
 void() CheckHorde;
 
+void(entity attacker,entity targ) AddScore {
+	if (attacker.classname == "player") {
+		if (time-attacker.lastkilltime <= 2) {
+			attacker.multiplier++;
+		}
+		else attacker.multiplier = 1;
+		attacker.score = attacker.score + (targ.worth * attacker.multiplier);
+		globalscore = globalscore + (targ.worth * attacker.multiplier);
+		attacker.lastkilltime = time;
+		sprint(attacker,"+");
+		sprint(attacker,ftos(targ.worth));
+		sprint(attacker,"x");
+		sprint(attacker,ftos(attacker.multiplier));
+		sprint(attacker," Score : ");
+		sprint(attacker,ftos(attacker.score));
+		sprint(attacker,"\n");
+	}
+}
+
+void() CheckPlayers { //Lifted from Quake Rerelease QC
+	local entity e;
+	hordeplayercount = 0;
+	
+	// count entities
+	e = find(world, classname, "player");
+	while(e)
+	{
+		if (e.hordedead == 0)
+		{
+			if (e.flags & FL_CLIENT)
+				hordeplayercount++;
+			else
+				dprint("Player is no longer a client!\n");
+		}
+		if (e.hordedead == 1) {
+			e.items = (IT_INVISIBILITY | IT_INVULNERABILITY);
+			e.weapon = 0;
+			e.effects = 0;
+			e.invisible_finished = time + 100;
+			e.invincible_finished = time + 100;
+			e.solid = SOLID_NOT;
+		}
+		e = find(e, classname, "player");
+	}
+	dprint("there are ");
+	dprint(ftos(hordeplayercount));
+	dprint(" players alive.\n");
+}
+
 void() info_monster_spawner {
-	self.think = SpawnMonster;
-	self.nextthink = time + 1;
+	if (!deathmatch) {
+		self.think = SpawnMonster;
+		self.nextthink = time + 1;
+	}
+	else remove(self);
 	spawnercount++;
 	dprint(ftos(spawnercount));
 	dprint("\n");
 }
 
-void() NextWave() {
+void() HordeHelp {
+	centerprint_all("K.O. Horde Mode\n\nMake sure to play in Co-op if recording\nofficial runs to prevent save spamming.\n\nBind These :\nImpulse 100 - Dash\nImpulse 200 - Help Menu\nImpulse 201 - Display Score");
+}
+
+void() RespawnTeammates {
+	local entity e;
+	void() HordeRespawn {
+		self.hordedead = 0;
+		PutClientInServer();
+	}
+	e = find(world, classname, "player");
+	while(e)
+	{
+		if (e.hordedead == 1) {
+			e.hordedead = 0;
+			e.items = 0;
+			T_Damage(e,world,world,-999);
+			e.think = HordeRespawn;
+			e.nextthink = time + 0.01;
+		}
+		e = find(e, classname, "player");
+	}
+}
+
+void() NextWave {
 	wave = wave + 1;
-	centerprint_all("Next Wave\n");
 	monstercount = ceil((wave*spawnercount)*0.25);
+	lastcount = killed_monsters;
 	spawnsleft = monstercount;
 }
 
@@ -245,22 +306,55 @@ void() Counter {
 		NextWave();
 		self.think = CheckHorde;
 		self.nextthink = time + 1;
+		centerprint_all("Go!");
+		bprint("Wave ");
+		bprint(ftos(wave));
+		bprint("\n");
 	}
 }
 
 void() WaveEnd {
-	centerprint_all("Wave Complete\n");
-	lastcount = killed_monsters;
+	centerprint_all("Wave Complete");
 	kills = 0;
 	countdown = 7;
 	self.nextthink = time + 0.01;
 	self.think = Counter;
 }
 
+void() RestartHorde {
+	local entity m;
+	bprint("\nFinal Score : ");
+	bprint(ftos(globalscore));
+	bprint("\n");
+	m = find(world,category,"monster");
+	while (m)
+	{
+		T_Damage(m,world,world,-999);
+		m = find(m,category,"monster");
+	}
+	m = find(world,classname,"player");
+	while (m)
+	{
+		m.score = 0;
+		m = find(m,classname,"player");
+	}
+	RespawnTeammates();
+	kills = 0;
+	wave = 0;
+	countdown = 12;
+	globalscore = 0;
+	self.think = Counter;
+	self.nextthink = time + 1;
+}
+
 void() CheckHorde {
 	self.nextthink = time + 1;
 	kills = killed_monsters - lastcount;
 	if (kills >= monstercount) WaveEnd();
+	CheckPlayers();
+	if (hordeplayercount <= 0) {
+		RestartHorde();
+	}
 	dprint("Kills : ");
 	dprint(ftos(kills));
 	dprint(", Monsters Left : ");
@@ -270,17 +364,16 @@ void() CheckHorde {
 
 void() HordeManager {
 	if (!deathmatch) {
-        self.think = CheckHorde;
-        self.nextthink = time + 1;
-    }
-    else remove(self);
-    PrecacheMonsters();
-	if (wave == 0) {
-		NextWave();
+		self.think = CheckHorde;
+		self.nextthink = time + 1;
 	}
+	else remove(self);
+    PrecacheMonsters();
+	HordeHelp();
+	RestartHorde();
 }
 
-entity() SpawnMonster {
+void() SpawnMonster {
     .string class;
 	self.nextthink = time + (random()*10)+5;
     /*entity e;
@@ -316,6 +409,7 @@ entity() SpawnMonster {
 		monster.th_melee = knight_atk1;
 		monster.th_pain = knight_pain;
 		monster.th_die = knight_die;
+		monster.worth = 10;
 	}
 	else if (monster.class == "hellknight")
 	{
@@ -331,6 +425,7 @@ entity() SpawnMonster {
 		monster.th_missile = hknight_magicc1;
 		monster.th_pain = hknight_pain;
 		monster.th_die = hknight_die;
+		monster.worth = 15;
 	}
 	else if (monster.class == "dog")
 	{
@@ -346,6 +441,7 @@ entity() SpawnMonster {
 		monster.th_die = dog_die;
 		monster.th_melee = dog_atta1;
 		monster.th_missile = dog_leap1;
+		monster.worth = 5;
 	}
 	else if (monster.class == "demon")
 	{
@@ -362,6 +458,7 @@ entity() SpawnMonster {
 		monster.th_melee = Demon_MeleeAttack;
 		monster.th_missile = demon1_jump1;
 		monster.th_pain = demon1_pain;
+		monster.worth = 50;
 	}
 	else if (monster.class == "ogre")
 	{
@@ -377,6 +474,7 @@ entity() SpawnMonster {
 		monster.th_melee = ogre_melee;
 		monster.th_missile = ogre_nail1;
 		monster.th_pain = ogre_pain;
+		monster.worth = 50;
 	}
 	else if (monster.class == "grunt")
 	{
@@ -391,6 +489,7 @@ entity() SpawnMonster {
 		monster.th_missile = army_atk1;
 		monster.th_pain = army_pain;
 		monster.th_die = army_die;
+		monster.worth = 10;
 	}
 	else if (monster.class == "enforcer")
 	{
@@ -405,6 +504,7 @@ entity() SpawnMonster {
 		monster.th_pain = enf_pain;
 		monster.th_die = enf_die;
 		monster.th_missile = enf_atk1;
+		monster.worth = 15;
 	}
 	else if (monster.class == "shambler")
 	{
@@ -420,6 +520,7 @@ entity() SpawnMonster {
 		monster.th_melee = sham_melee;
 		monster.th_missile = sham_magic1;
 		monster.th_pain = sham_pain;
+		monster.worth = 50;
 	}
 	else if (monster.class == "shalrath")
 	{
@@ -434,6 +535,7 @@ entity() SpawnMonster {
 		monster.th_die = shalrath_die;
 		monster.th_pain = shalrath_pain;
 		monster.th_missile = shal_attack1;
+		monster.worth = 50;
 	}
 	else if (monster.class == "wizard")
 	{
@@ -449,6 +551,7 @@ entity() SpawnMonster {
 		monster.th_missile = Wiz_Missile;
 		monster.th_pain = Wiz_Pain;
 		monster.th_die = wiz_die;
+		monster.worth = 25;
 	}
 	else if (monster.class == "zombie")
 	{
@@ -464,6 +567,7 @@ entity() SpawnMonster {
 		monster.th_die = zombie_die;
 		monster.th_missile = zombie_missile;
 		monster.target = string_null; // don't target anything!
+		monster.worth = 20;
 	}
 	else
 	{
@@ -477,8 +581,7 @@ entity() SpawnMonster {
 	monster.category = "monster";
 	monster.takedamage = DAMAGE_AIM;
 	monster.ideal_yaw = monster.angles * '0 1 0';
-	if (!monster.yaw_speed)
-		monster.yaw_speed = 20;
+	if (!monster.yaw_speed) monster.yaw_speed = 20;
 	monster.view_ofs = '0 0 25';
 	monster.use = monster_use;
 	monster.solid = SOLID_BBOX;
