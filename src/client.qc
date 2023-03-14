@@ -995,7 +995,7 @@ void() CheckPowerups =
 			self.invincible_time = 0;
 			self.invincible_finished = 0;
 		}
-		if (self.invincible_finished > time)
+		if (self.invincible_finished > time && self.hordedead == 0)
 			self.effects = self.effects | EF_DIMLIGHT;
 		else
 			self.effects = self.effects - (self.effects & EF_DIMLIGHT);
