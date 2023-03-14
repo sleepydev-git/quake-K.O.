@@ -1,6 +1,7 @@
 ../progs.dat
 
 defs.qc
+kodefs.qc
 ko.qc
 subs.qc
 fight.qc
