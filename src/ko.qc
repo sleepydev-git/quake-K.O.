@@ -1,36 +1,15 @@
-float knockback = 2;
-float stacksize = 3;
-float smashmode;
-float ammoreload;
-.float dashcooldown;
-.float dashcount;
-.float prevvel;
-.float bounce;
-.entity lastattacker;
-.float rocketmode;
-.float nailmode;
-.float dashok;
-.float parry;
-.vector forward;
-.float nadetime;
-.string entity_type;
-.float weight;
-.float damagevel;
-.float weapmod_nailgun;
-.float weapmod_rocket;
-.entity lasttouch;
-.vector savevel;
-.float lastweap;
-
-void() CheckSmashmode()
-{
-    entity spot;
+void() CheckSmashmode() {
+	entity spot;
 	spot = find(world, classname, "func_killsky"); //If "func_killsky", the boundary entity, is detected
-    if (spot) smashmode = 1; else smashmode = 0; //Change map to Smashmode instead of HP mode.
+	if (spot) smashmode = 1; else smashmode = 0; //Change map to Smashmode instead of HP mode.
 }
 
-void(vector kdir, float kdam) s_knockback =
-{
+void() HordeHelp;
+void() DisplayHelp {
+    HordeHelp();
+}
+
+void(vector kdir, float kdam) s_knockback {
     if (smashmode == 1)
     {
         self.velocity = self.velocity+('0 0 150')+(((kdir*self.health*knockback)+(kdir*kdam*knockback))); //If Smashmode = 1, knockback is calculated by how high health is.
@@ -55,15 +34,11 @@ void(vector kdir, float kdam) s_knockback =
     self.prevvel = self.velocity_z;
 }
 
-void() CheckBounce
-{
-    if (self.bounce == 1)
-    {
+void() CheckBounce {
+    if (self.bounce == 1) {
         particle(self.origin,'10 10 10',7+(random()*5),5); //Smoke trails for recently knocked entities.
-        if (self.flags & FL_ONGROUND)
-        {
-            if (fabs(self.prevvel) >= 100) //If z velocity is over 100 in either direction
-            {
+        if (self.flags & FL_ONGROUND) {
+            if (fabs(self.prevvel) >= 100) { //If z velocity is over 100 in either direction
                 self.flags = self.flags - FL_ONGROUND;
                 self.velocity_z = (fabs(self.prevvel) * 0.5) + 20; //Bounce!
                 self.prevvel = self.velocity_z;
@@ -72,48 +47,39 @@ void() CheckBounce
     }
 }
 
-void() CheckDash
-{
-    if (self.flags & FL_ONGROUND && self.dashcount != 2)  //
-    {
+void() CheckDash {
+    if (self.flags & FL_ONGROUND && self.dashcount != 2)  {
         self.dashcount = 2; //If on ground, dash count is refilled.
         sound(self,CHAN_VOICE,"player/land.wav",1,ATTN_NORM);
     }
-    if (self.impulse == 100) //Dash impulse
-    {
-        if (self.dashcount > 0 && self.dashok == 1)
-        {
+    if (self.impulse == 100) { //Dash impulse
+        if (self.dashcount > 0 && self.dashok == 1) {
             makevectors(self.v_angle);
             self.velocity = (v_forward * 750) + ('0 0 200');
             self.velocity_z = self.velocity_z * 0.5;
             self.dashcount = self.dashcount - 1;
             sound(self,CHAN_VOICE,"dash1.wav",1,ATTN_NORM);
         }
+        self.impulse = 0;
     }
     if (self.dashcooldown == 35) sound(self,CHAN_ITEM,"recharge.wav",1,ATTN_NORM);
-    if (self.dashcooldown <= 0 && self.dashok == 0)
-    {
+    if (self.dashcooldown <= 0 && self.dashok == 0) {
         self.bounce = 0;
         self.dashok = 1;
         if (self.dashcount == 2) sound(self,CHAN_ITEM,"2dash.wav",1,ATTN_NORM);
         if (self.dashcount == 1) sound(self,CHAN_ITEM,"1dash.wav",1,ATTN_NORM);
     }
-    if (self.dashcooldown > 0)
-    {
+    if (self.dashcooldown > 0) {
         self.dashcooldown = self.dashcooldown - 1;
         self.dashok = 0;
         self.bounce = 1;
     }
 }
 
-void() Parry
-{
-    if (other.classname != "player")
-    {
-        if (!other.speed)
-            other.speed = 1000;
-        if (other.nadetime)
-            other.nadetime = other.nadetime + 2.5;
+void() Parry {
+    if (other.classname != "player") {
+        if (!other.speed) other.speed = 1000;
+        if (other.nadetime) other.nadetime = other.nadetime + 2.5;
         other.speed = other.speed * 1.5;
         particle(other.origin+'0 0 10','10 10 10',95,25);
         other.velocity = self.forward * other.speed;
@@ -124,8 +90,7 @@ void() Parry
     }
 }
 
-void() SafeRemove
-{
+void() SafeRemove {
     self.owner = self;
     self.touch = SUB_Null;
     self.model = string_null;
@@ -134,8 +99,7 @@ void() SafeRemove
 
 void(float swap) SwapWeaponMods {
     if (swap == 0) {
-        if (self.weapon == IT_SUPER_NAILGUN)
-        {
+        if (self.weapon == IT_SUPER_NAILGUN) {
             if (self.weapmod_nailgun == 2) {
                 self.weapmod_nailgun = 1;
                 sprint(self,"Nailgun Mode\n");
@@ -174,22 +138,24 @@ void(float swap) SwapWeaponMods {
     }
 }
 
-void() CheckKOImpulse
-{
-	if (self.impulse == 101) //Swap weapon mods
-	{
+void() CheckKOImpulse {
+	if (self.impulse == 101) { //Swap weapon mods
         SwapWeaponMods(0);
 	}
+    if (self.impulse == 200) {
+        DisplayHelp();
+    }
+    if (self.impulse == 201) {
+        centerprint(self,ftos(globalscore));
+    }
 }
 
-void() ItemLaunch
-{
+void() ItemLaunch {
     vector dir;
     dir = self.origin - other.origin;
     normalize(dir);
     self.damagevel = fabs(self.velocity_x) + fabs(self.velocity_y) + fabs(self.velocity_z); //this should get a approximation of the speed of the head
-    if (self.classname != "player" && other.solid != SOLID_BSP)
-    {
+    if (self.classname != "player" && other.solid != SOLID_BSP) {
         self.think = SafeRemove;
         self.nextthink = time + 10;
         self.lasttouch = other; //this is saved to determine who gets the kill if the head vel kills somebody
@@ -201,8 +167,7 @@ void() ItemLaunch
         if (self.velocity_y >= 3000) self.velocity_y = 3000;
         if (self.velocity_y <= -3000) self.velocity_y = -3000;
         self.velocity_z = fabs(self.velocity_z);
-        if (self.damagevel >= 1500 && other != self.lasttouch)
-        {
+        if (self.damagevel >= 1500 && other != self.lasttouch) {
             T_Damage(other,self,self.lasttouch,(self.damagevel-1500)/100);
             self.velocity = -dir * self.velocity*'0.5 0.5 0.5'; //bounce off otherwise it causes issues
             //sprint(other,"bounce\n");
@@ -210,11 +175,9 @@ void() ItemLaunch
     }
 }
 
-void centerprint_all(string s) //Shamelessly ripped from Quake remaster code. Thanks guys!
-{
+void centerprint_all(string s) { //Lifted from Quake Rerelease QC
 	entity e = find(world, classname, "player");
-	while(e)
-	{
+	while(e) {
 		centerprint(e, s);
 		e = find(e, classname, "player");
 	}
