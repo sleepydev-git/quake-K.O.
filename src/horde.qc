@@ -367,7 +367,10 @@ void() HordeManager {
 		self.think = CheckHorde;
 		self.nextthink = time + 1;
 	}
-	else remove(self);
+	else {
+		hordemode = 1;
+		remove(self);
+	}
     PrecacheMonsters();
 	HordeHelp();
 	RestartHorde();

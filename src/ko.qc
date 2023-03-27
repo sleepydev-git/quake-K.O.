@@ -10,6 +10,13 @@ void() DisplayHelp {
 }
 
 void(vector kdir, float kdam) s_knockback {
+    if (self.flags & FL_ONGROUND) //Remove entities from ground.
+    {
+        self.velocity_z = fabs(self.velocity_z);
+        self.flags = self.flags - FL_ONGROUND;
+        knockback = 2;
+    }
+    else knockback = 4;
     if (smashmode == 1)
     {
         self.velocity = self.velocity+('0 0 150')+(((kdir*self.health*knockback)+(kdir*kdam*knockback))); //If Smashmode = 1, knockback is calculated by how high health is.
@@ -21,16 +28,12 @@ void(vector kdir, float kdam) s_knockback {
         if (self.health >= 250) hp = 250;
         self.velocity = self.velocity+('0 0 150')+(((kdir*(250-hp)*knockback)+(kdir*kdam*knockback))); //If Smashmode = 0, knockback is calcualted by how close player health is to 0.
     }
-    if (self.flags & FL_ONGROUND) //Remove entities from ground.
-    {
-        self.velocity_z = fabs(self.velocity_z);
-        self.flags = self.flags - FL_ONGROUND;
-    }
     //Enable dash cooldown period and bounce.
     self.bounce = 1; 
     //Dash cooldown is calculated by adding the current cooldown value + damage + current health. Making combos ridiculously effective.
-    if (smashmode == 1) self.dashcooldown = self.dashcooldown + kdam + (self.health / 15);
-    if (smashmode == 0) self.dashcooldown = self.dashcooldown + kdam + ((250-self.health) / 5);
+    if (smashmode == 1) self.dashcooldown = time + ((kdam + self.combo + (self.health / 15)) * 0.01);
+    if (smashmode == 0) self.dashcooldown = time + ((kdam + self.combo + ((250-self.health) / 5)) * 0.01);
+    self.combo = kdam;
     self.prevvel = self.velocity_z;
 }
 
@@ -62,17 +65,17 @@ void() CheckDash {
         }
         self.impulse = 0;
     }
-    if (self.dashcooldown == 35) sound(self,CHAN_ITEM,"recharge.wav",1,ATTN_NORM);
-    if (self.dashcooldown <= 0 && self.dashok == 0) {
+    //if (self.dashcooldown == 35) sound(self,CHAN_ITEM,"recharge.wav",1,ATTN_NORM);
+    if (time >= self.dashcooldown && self.dashok == 0) {
         self.bounce = 0;
         self.dashok = 1;
+        self.combo = 0;
         if (self.dashcount == 2) sound(self,CHAN_ITEM,"2dash.wav",1,ATTN_NORM);
         if (self.dashcount == 1) sound(self,CHAN_ITEM,"1dash.wav",1,ATTN_NORM);
     }
-    if (self.dashcooldown > 0) {
-        self.dashcooldown = self.dashcooldown - 1;
-        self.dashok = 0;
+    if (time < self.dashcooldown) {
         self.bounce = 1;
+        self.dashok = 0;
     }
 }
 

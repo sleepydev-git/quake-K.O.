@@ -18,10 +18,11 @@
 .entity lasttouch;
 .vector savevel;
 .float lastweap;
+.float combo;
 
 //World vars
-float knockback = 2;
-float stacksize = 3;
+float knockback;
+float stacksize;
 float smashmode;
 float ammoreload;
 
@@ -31,6 +32,7 @@ float ammoreload;
 .float lastkilltime;
 .float multiplier;
 .float hordedead;
+float hordemode;
 float globalscore;
 float wave;
 float monstercount;
